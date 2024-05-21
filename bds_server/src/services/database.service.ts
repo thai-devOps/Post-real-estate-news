@@ -3,6 +3,7 @@ import env_config from '~/configs/env.config'
 import { FURNITURE_SCHEMA } from '~/models/schemas/Furniture.schema'
 import { FURNITURE_DETAIL_SCHEMA } from '~/models/schemas/FurnitureDetail.schema'
 import { PROPERTY_SCHEMA } from '~/models/schemas/Property.schema'
+import { REAL_ESTATE_NEW_SCHEMA } from '~/models/schemas/RealEstateNew.schema'
 import { REFRESH_TOKEN_SCHEMA } from '~/models/schemas/RefreshToken.schema'
 import { USER_SCHEMA } from '~/models/schemas/User.schema'
 
@@ -40,6 +41,9 @@ class DatabaseService {
   }
   get furniture_details(): Collection<FURNITURE_DETAIL_SCHEMA> {
     return this.db.collection(env_config.DB_COLLECTION.FURNITURE_DETAILS as string)
+  }
+  get real_estate_news(): Collection<REAL_ESTATE_NEW_SCHEMA> {
+    return this.db.collection(env_config.DB_COLLECTION.REAL_ESTATE_NEWS as string)
   }
 }
 const databaseService = new DatabaseService()

@@ -68,6 +68,7 @@ const messages = {
     },
     unauthorized: {
       default: 'Unauthorized',
+      admin_required: 'Bạn không có quyền thực hiện thao tác này',
       reset_password: {
         token_required: 'Token reset password không được để trống',
         token_invalid: 'Token reset password không hợp lệ',

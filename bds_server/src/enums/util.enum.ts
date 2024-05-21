@@ -42,3 +42,21 @@ export enum FURNITURE_STATUS {
   // Đã qua sử dụng
   USED = 'used'
 }
+export enum DIRECTION {
+  // Đông
+  EAST = 'east',
+  // Tây
+  WEST = 'west',
+  // Nam
+  SOUTH = 'south',
+  // Bắc
+  NORTH = 'north',
+  // Đông Bắc
+  EAST_NORTH = 'east_north',
+  // Tây Bắc
+  WEST_NORTH = 'west_north',
+  // Đông Nam
+  EAST_SOUTH = 'east_south',
+  // Tây Nam
+  WEST_SOUTH = 'west_south'
+}

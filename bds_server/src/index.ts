@@ -7,6 +7,7 @@ import userRoutes from './routes/users.routes'
 import { defaultErrorHandler } from './utils/requestHandler'
 import propertiesRoutes from './routes/properties.routes'
 import furnituresRoutes from './routes/furniture.routes'
+import realEstateNewsRoutes from './routes/real_estate_news.routes'
 const app = express()
 app.use(
   cors({
@@ -24,6 +25,7 @@ databaseService.connect()
 app.use('/users', userRoutes)
 app.use('/properties', propertiesRoutes)
 app.use('/furnitures', furnituresRoutes)
+app.use('/real-estate-news', realEstateNewsRoutes)
 // error handler
 app.use(defaultErrorHandler)
 

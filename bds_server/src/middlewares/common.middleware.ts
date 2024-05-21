@@ -1,4 +1,4 @@
-import { Request } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { checkSchema } from 'express-validator'
 import httpStatusCode from '~/constants/httpStatusCode'
 import messages from '~/constants/message'
@@ -302,6 +302,17 @@ const changePasswordValidator = validateSchema(
     }
   })
 )
+const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const user = await userService.findUserById(user_id)
+  if (!user) {
+    return res.status(httpStatusCode.NOT_FOUND).json({ message: 'Không tìm thấy người dùng'})
+  }
+  if (user.role !== ROLE_TYPE.ADMIN) {
+    return res.status(httpStatusCode.FORBIDDEN).json({ message: messages.errors.unauthorized.admin_required })
+  }
+  next()
+}
 const commonMiddlewares = {
   registerBodyValidator,
   loginBodyValidator,
@@ -310,6 +321,7 @@ const commonMiddlewares = {
   verifyEmailValidator,
   forgotPasswordValidator,
   changePasswordValidator,
-  resetPasswordValidator
+  resetPasswordValidator,
+  isAdmin
 }
 export default commonMiddlewares
