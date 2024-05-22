@@ -1,7 +1,9 @@
 import { Collection, Db, MongoClient } from 'mongodb'
 import env_config from '~/configs/env.config'
+import { COMMENT_SCHEMA } from '~/models/schemas/Comment.schema'
 import { FURNITURE_SCHEMA } from '~/models/schemas/Furniture.schema'
 import { FURNITURE_DETAIL_SCHEMA } from '~/models/schemas/FurnitureDetail.schema'
+import { IMAGE_SCHEMA } from '~/models/schemas/Image.schema'
 import { PROPERTY_SCHEMA } from '~/models/schemas/Property.schema'
 import { REAL_ESTATE_NEW_SCHEMA } from '~/models/schemas/RealEstateNew.schema'
 import { REFRESH_TOKEN_SCHEMA } from '~/models/schemas/RefreshToken.schema'
@@ -44,6 +46,12 @@ class DatabaseService {
   }
   get real_estate_news(): Collection<REAL_ESTATE_NEW_SCHEMA> {
     return this.db.collection(env_config.DB_COLLECTION.REAL_ESTATE_NEWS as string)
+  }
+  get comments(): Collection<COMMENT_SCHEMA> {
+    return this.db.collection(env_config.DB_COLLECTION.COMMENTS as string)
+  }
+  get images(): Collection<IMAGE_SCHEMA> {
+    return this.db.collection(env_config.DB_COLLECTION.IMAGES as string)
   }
 }
 const databaseService = new DatabaseService()

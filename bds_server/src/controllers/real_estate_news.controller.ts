@@ -9,12 +9,7 @@ import furnitureDetailsService from '~/services/furniture_details.service'
 import realEstateNewsService from '~/services/real_estate_news.service'
 import { responseSuccess } from '~/utils/response'
 const createRealEstateNew = async (
-  req: Request<
-    ParamsDictionary,
-    any,
-    REAL_ESTATE_NEW_REQUEST_BODY,
-    any
-  >,
+  req: Request<ParamsDictionary, any, REAL_ESTATE_NEW_REQUEST_BODY, any>,
   res: Response
 ) => {
   const payload = req.body

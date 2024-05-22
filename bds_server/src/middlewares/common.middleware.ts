@@ -306,7 +306,7 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
   const { user_id } = req.decoded_access_token as TokenPayload
   const user = await userService.findUserById(user_id)
   if (!user) {
-    return res.status(httpStatusCode.NOT_FOUND).json({ message: 'Không tìm thấy người dùng'})
+    return res.status(httpStatusCode.NOT_FOUND).json({ message: 'Không tìm thấy người dùng' })
   }
   if (user.role !== ROLE_TYPE.ADMIN) {
     return res.status(httpStatusCode.FORBIDDEN).json({ message: messages.errors.unauthorized.admin_required })
