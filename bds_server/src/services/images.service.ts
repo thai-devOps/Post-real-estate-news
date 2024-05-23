@@ -3,7 +3,7 @@ import databaseService from './database.service'
 import { ObjectId } from 'mongodb'
 
 class ImagesService {
-  async createImage(payload: { contentType: string; image: Buffer }) {
+  async createImage(payload: { public_id: string; url: string }) {
     return await databaseService.images.insertOne(
       new IMAGE_SCHEMA({
         ...payload

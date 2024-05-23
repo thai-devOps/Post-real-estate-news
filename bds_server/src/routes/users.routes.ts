@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import commonControllers from '~/controllers/common.controller'
+import usersControllers from '~/controllers/users.controller'
 import commonMiddlewares from '~/middlewares/common.middleware'
+import usersMiddlewares from '~/middlewares/users.middleware'
 import { wrapRequestHandler } from '~/utils/requestHandler'
 
 const userRoutes = Router()
@@ -30,8 +32,12 @@ userRoutes.post('/login', commonMiddlewares.loginBodyValidator, wrapRequestHandl
  * }
  * }
  */
-userRoutes.post('/logout', commonMiddlewares.accessTokenValidator, wrapRequestHandler(commonControllers.logout))
-
+userRoutes.post(
+  '/logout',
+  commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.refreshTokenValidator,
+  wrapRequestHandler(commonControllers.logout)
+)
 /**
  * description: Refresh access token
  * method: POST
@@ -107,4 +113,28 @@ userRoutes.post(
   wrapRequestHandler(commonControllers.changePassword)
 )
 
+/**
+ * description: Get user profile
+ * method: GET
+ * path: /users/profile
+ * headers: {
+ * Authorization: { description: Bearer access_token }
+ * }
+ */
+userRoutes.get('/profile', commonMiddlewares.accessTokenValidator, wrapRequestHandler(usersControllers.getProfile))
+/**
+ * description: Update user profile
+ * method: PUT
+ * path: /users/profile
+ * headers: {
+ * Authorization: { description: Bearer access_token }
+ * }
+ * body: UserProfile
+ */
+userRoutes.put(
+  '/profile',
+  commonMiddlewares.accessTokenValidator,
+  usersMiddlewares.updateProfileVaidator,
+  wrapRequestHandler(usersControllers.updateProfile)
+)
 export default userRoutes

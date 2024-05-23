@@ -4,14 +4,20 @@ import { ImageTypes, AddressTypes } from '~/type'
 interface UserTypes {
   _id?: ObjectId
   full_name: string
+  tax_code?: string
+  invoice_info?: {
+    i_name: string
+    i_company_name: string
+    i_tax_code: string
+    i_email: string
+  }
   phone?: string
   email: string
   password: string
   role?: ROLE_TYPE
   account_type: ACCOUNT_TYPE
   verify?: USER_VERIFY_STATUS
-  date_of_birth?: string // ISO8601 string
-  avartar?: ImageTypes
+  avatar?: ImageTypes
   // Optional fields
   address?: AddressTypes
   forgot_password_token?: string
@@ -23,14 +29,20 @@ interface UserTypes {
 export class USER_SCHEMA {
   _id: ObjectId
   full_name: string
+  tax_code: string
+  invoice_info: {
+    i_name: string
+    i_company_name: string
+    i_tax_code: string
+    i_email: string
+  }
   phone: string
   email: string
   password: string
   role: ROLE_TYPE
   verify: USER_VERIFY_STATUS
   account_type: ACCOUNT_TYPE
-  date_of_birth: string // ISO8601 string
-  avartar: ImageTypes
+  avatar: ImageTypes
   // Optional fields
   address: AddressTypes
   forgot_password_token: string
@@ -44,14 +56,15 @@ export class USER_SCHEMA {
     const date = new Date()
     this._id = user._id || new ObjectId()
     this.full_name = user.full_name || ''
+    this.tax_code = user.tax_code || ''
+    this.invoice_info = user.invoice_info || { i_name: '', i_company_name: '', i_tax_code: '', i_email: '' }
     this.phone = user.phone || ''
     this.email = user.email
     this.password = user.password
     this.role = user.role || ROLE_TYPE.USER
     this.verify = user.verify || USER_VERIFY_STATUS.UNVERIFIED
     this.account_type = user.account_type
-    this.date_of_birth = user.date_of_birth || ''
-    this.avartar = user.avartar || { public_id: '', url: '' }
+    this.avatar = user.avatar || { public_id: '', url: '' }
     this.address = user.address || ({ details: '', street: '', province: '', district: '', ward: '' } as AddressTypes)
     this.forgot_password_token = user.forgot_password_token || ''
     this.email_verify_token = user.email_verify_token || ''

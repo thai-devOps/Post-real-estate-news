@@ -10,6 +10,7 @@ import { USER_VERIFY_STATUS } from '~/enums/user.enum'
 import { TokenPayload } from '~/type'
 import refreshTokenService from './refresh_tokens.service'
 import { sendEmailResetPassword } from '~/utils/email'
+import { UserProfile } from '~/models/requests/users.request'
 
 class UserService {
   async createAccount(payload: RegisterRequest) {
@@ -168,6 +169,13 @@ class UserService {
   }
   public async findUserById(id: string) {
     return databaseService.users.findOne({ _id: new ObjectId(id) })
+  }
+  async updateProfile(id: string, payload: UserProfile) {
+    return databaseService.users.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: { ...payload, updated_at: new Date() } },
+      { returnDocument: 'after' }
+    )
   }
 }
 

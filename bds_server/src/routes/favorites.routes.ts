@@ -1,0 +1,51 @@
+import { Router } from 'express'
+import favoritesControllers from '~/controllers/favorites.controller'
+import commonMiddlewares from '~/middlewares/common.middleware'
+import favoritesMiddlewares from '~/middlewares/favorites.middleware'
+import { wrapRequestHandler } from '~/utils/requestHandler'
+
+const favoritesRoutes = Router()
+
+/**
+ * description: Create a favorite
+ * method: POST
+ * path: /favorites/create
+ * body: { post_id: string, user_id: string }
+ */
+favoritesRoutes.post(
+  '/create',
+  commonMiddlewares.accessTokenValidator,
+  favoritesMiddlewares.createFavoriteValidator,
+  wrapRequestHandler(favoritesControllers.createFavorite)
+)
+
+/**
+ * description: Get favorites by user id and post id
+ * method: GET
+ * path: /favorites/
+ * query: { user_id: string, post_id: string }
+ * headers: {
+ * Authorization: {
+ * description: Bearer access_token
+ */
+favoritesRoutes.get(
+  '/',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(favoritesControllers.getFavoritesByUserIdAndPostId)
+)
+
+/**
+ * description: Delete a favorite
+ * method: DELETE
+ * path: /favorites/delete
+ * body: { post_id: string, user_id: string }
+ *
+ */
+favoritesRoutes.delete(
+  '/delete',
+  commonMiddlewares.accessTokenValidator,
+  favoritesMiddlewares.createFavoriteValidator,
+  wrapRequestHandler(favoritesControllers.unFavorite)
+)
+
+export default favoritesRoutes

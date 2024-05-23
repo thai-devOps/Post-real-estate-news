@@ -36,6 +36,10 @@ const messages = {
       description: 'Mô tả không được để trống',
       property_id: 'ID loại hình bất động sản không được để trống'
     },
+    favorites: {
+      post_id: 'ID bài viết không được để trống',
+      user_id: 'ID người dùng không được để trống'
+    },
     properties: {
       name: {
         required: 'Tên không được để trống',

@@ -19,14 +19,14 @@ const uploadImagesRoutes = Router()
 uploadImagesRoutes.post(
   '/single-image',
   upload.single('image'),
-  wrapRequestHandler(uploadImageControllers.uploadSingleImage)
+  wrapRequestHandler(uploadImageControllers.uploadCloudinarySingleImage)
 )
 /**
  * description: Get image by id
  * method: GET
  * path: /upload/:id
  */
-uploadImagesRoutes.get('/single-image/:id', wrapRequestHandler(uploadImageControllers.getImageById))
+uploadImagesRoutes.get('/images/:id', wrapRequestHandler(uploadImageControllers.getCloudinaryImageById))
 /**
  * description: Upload multiple images
  * method: POST
@@ -41,6 +41,6 @@ uploadImagesRoutes.get('/single-image/:id', wrapRequestHandler(uploadImageContro
 uploadImagesRoutes.post(
   '/multiple-images',
   upload.array('images'),
-  wrapRequestHandler(uploadImageControllers.uploadMultipleImages)
+  wrapRequestHandler(uploadImageControllers.uploadCloudinaryMultipleImages)
 )
 export default uploadImagesRoutes

@@ -11,6 +11,7 @@ import furnituresRoutes from './routes/furniture.routes'
 import realEstateNewsRoutes from './routes/real_estate_news.routes'
 import commentsRoutes from './routes/comments.routes'
 import uploadImagesRoutes from './routes/upload_images.routes'
+import favoritesRoutes from './routes/favorites.routes'
 const app = express()
 app.use(
   cors({
@@ -36,6 +37,7 @@ app.use('/properties', propertiesRoutes)
 app.use('/furnitures', furnituresRoutes)
 app.use('/real-estate-news', realEstateNewsRoutes)
 app.use('/comments', commentsRoutes)
+app.use('/favorites', favoritesRoutes)
 // error handler
 app.use(defaultErrorHandler)
 

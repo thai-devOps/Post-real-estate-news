@@ -19,16 +19,7 @@ const registerBodyValidator = validateSchema(
         },
         isLength: {
           errorMessage: messages.errors.register.full_name.min,
-          options: { min: 6, max: 50 }
-        },
-        custom: {
-          options: (value) => {
-            // check full name is valid
-            if (!/^[a-zA-Z ]+$/.test(value)) {
-              throw new Error(messages.errors.register.full_name.invalid)
-            }
-            return true
-          }
+          options: { min: 2, max: 50 }
         }
       },
       email: {
