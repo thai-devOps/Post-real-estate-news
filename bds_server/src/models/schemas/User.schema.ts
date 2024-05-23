@@ -22,7 +22,7 @@ interface UserTypes {
   address?: AddressTypes
   forgot_password_token?: string
   email_verify_token?: string
-  blocked_posts?: ObjectId[]
+  locked_posts?: ObjectId[]
   created_at?: Date
   updated_at?: Date
 }
@@ -47,7 +47,7 @@ export class USER_SCHEMA {
   address: AddressTypes
   forgot_password_token: string
   email_verify_token: string
-  blocked_posts: ObjectId[]
+  locked_posts: ObjectId[]
   created_at?: Date
   updated_at?: Date
 
@@ -68,7 +68,7 @@ export class USER_SCHEMA {
     this.address = user.address || ({ details: '', street: '', province: '', district: '', ward: '' } as AddressTypes)
     this.forgot_password_token = user.forgot_password_token || ''
     this.email_verify_token = user.email_verify_token || ''
-    this.blocked_posts = user.blocked_posts || []
+    this.locked_posts = user.locked_posts || []
     this.created_at = user.created_at || date
     this.updated_at = user.updated_at || date
   }

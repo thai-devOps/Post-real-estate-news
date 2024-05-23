@@ -133,4 +133,26 @@ userRoutes.put(
   usersMiddlewares.updateProfileVaidator,
   wrapRequestHandler(usersControllers.updateProfile)
 )
+/**
+ * description: lock a post
+ * methods: POST
+ * body: {post_id: string}
+ * headers: {Authorization: {description: Bearer access_token}}
+ */
+userRoutes.post('/lock-post', commonMiddlewares.accessTokenValidator, wrapRequestHandler(usersControllers.lockPost))
+/**
+ * description: unlock a post
+ * methods: DELETE
+ * path: /lock-post/:post_id
+ * headers: {Authorization: {description: Bearer access_token}}
+ */
+userRoutes.delete(
+  '/lock-post/:post_id',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(usersControllers.unlockPost)
+)
+/**
+ * description: get lock posts
+ */
+userRoutes.get('/lock-posts', commonMiddlewares.accessTokenValidator, wrapRequestHandler(usersControllers.getLockPosts))
 export default userRoutes

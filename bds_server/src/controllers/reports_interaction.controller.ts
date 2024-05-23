@@ -66,13 +66,26 @@ const getReportsByReporterId = async (req: Request<ParamsDictionary, any, any, a
     data: result
   })
 }
-
+const getReportsByType = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+  const { type } = req.query
+  const result = await reportsInteractionService.getReportsByType(type)
+  if (!result)
+    return responseSuccess(res, {
+      message: 'Không có báo cáo nào theo loại này',
+      data: []
+    })
+  return responseSuccess(res, {
+    message: 'Lấy danh sách báo cáo theo loại thành công',
+    data: result
+  })
+}
 const reportsInteractionControllers = {
   creatReport,
   updateReportStatus,
   getReportById,
   getReports,
   deleteReport,
-  getReportsByReporterId
+  getReportsByReporterId,
+  getReportsByType
 }
 export default reportsInteractionControllers

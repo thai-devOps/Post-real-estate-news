@@ -34,11 +34,7 @@ realEstateNewsRoutes.post(
  * }
  * }
  */
-realEstateNewsRoutes.get(
-  '/',
-  commonMiddlewares.accessTokenValidator,
-  wrapRequestHandler(realEstateNewsControllers.getRealEstateNews)
-)
+realEstateNewsRoutes.get('/', wrapRequestHandler(realEstateNewsControllers.getRealEstateNews))
 /**
  * description: Get real estate news by id
  * method: GET

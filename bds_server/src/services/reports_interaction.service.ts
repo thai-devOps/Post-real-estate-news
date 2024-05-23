@@ -64,7 +64,7 @@ class ReportsInteractionService {
     return await databaseService.reports_interaction.find().toArray()
   }
   public async getReportsByType(type: REPORT_TYPE) {
-    return await databaseService.reports_interaction.find({ type }).toArray()
+    return await databaseService.reports_interaction.find({ report_type: type }).toArray()
   }
 }
 const reportsInteractionService = new ReportsInteractionService()

@@ -180,7 +180,7 @@ class UserService {
   async blockPost(id: string, post_id: string) {
     return databaseService.users.findOneAndUpdate(
       { _id: new ObjectId(id) },
-      { $push: { blocked_posts: new ObjectId(post_id) }, $set: { updated_at: new Date() } },
+      { $push: { locked_posts: new ObjectId(post_id) }, $set: { updated_at: new Date() } },
       { returnDocument: 'after' }
     )
   }
@@ -190,6 +190,12 @@ class UserService {
       { $pull: { blocked_posts: new ObjectId(post_id) }, $set: { updated_at: new Date() } },
       { returnDocument: 'after' }
     )
+  }
+  async getLockPosts(user_id: string) {
+    const user = await this.getUserById(user_id)
+    if (!user) throw new ErrorWithMessage({ message: 'Không tìm thấy user', status: 404 })
+    const { locked_posts } = user
+    return await databaseService.real_estate_news.find({ _id: { $in: locked_posts } }).toArray()
   }
 }
 

@@ -10,7 +10,7 @@ export const sendEmailVerification = async (
   role: ROLE_TYPE
 ) => {
   try {
-    const verificationLink = `${env_config.CLIENT_PORTS}/verify-email/${token}?account_type=${account_type}&role=${role}`
+    const verificationLink = `${env_config.CLIENT_PORTS}/verify-email?token=${token}&account_type=${account_type}&role=${role}`
     const htmlContent = `
          <p>Xin chào,</p>
 <p>Cảm ơn bạn đã đăng ký tài khoản! Vui lòng sử dụng liên kết xác minh sau để kích hoạt tài khoản của bạn:</p>

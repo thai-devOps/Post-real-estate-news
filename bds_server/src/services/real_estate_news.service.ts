@@ -41,7 +41,8 @@ class RealEstateNewsService {
     return {
       items: result[0],
       paginate: {
-        total: Math.ceil(result[1] / limit),
+        totalPage: Math.ceil(result[1] / limit),
+        pageSize: result[1],
         page,
         limit
       }

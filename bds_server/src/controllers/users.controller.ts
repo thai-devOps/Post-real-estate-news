@@ -20,16 +20,16 @@ const updateProfile = async (req: Request<ParamsDictionary, any, UserProfile, an
     data: result
   })
 }
-const blockPosts = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+const lockPost = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
   const { user_id } = req.decoded_access_token as TokenPayload
-  const { post_id } = req.params
+  const { post_id } = req.body
   const result = await userService.blockPost(user_id, post_id)
   return responseSuccess(res, {
     message: 'Chặn tin đăng thành công',
     data: result
   })
 }
-const unblockPosts = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+const unlockPost = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
   const { user_id } = req.decoded_access_token as TokenPayload
   const { post_id } = req.params
   const result = await userService.unblockPost(user_id, post_id)
@@ -38,11 +38,19 @@ const unblockPosts = async (req: Request<ParamsDictionary, any, any, any>, res: 
     data: result
   })
 }
-
+const getLockPosts = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const result = await userService.getLockPosts(user_id)
+  return responseSuccess(res, {
+    message: 'Lấy danh sách tin đăng bị chặn thành công',
+    data: result
+  })
+}
 const usersControllers = {
   getProfile,
   updateProfile,
-  blockPosts,
-  unblockPosts
+  lockPost,
+  unlockPost,
+  getLockPosts
 }
 export default usersControllers
