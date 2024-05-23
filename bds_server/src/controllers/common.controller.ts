@@ -1,11 +1,13 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
+import httpStatusCode from '~/constants/httpStatusCode'
 import { LoginRequest, RegisterRequest } from '~/models/requests/common.request'
 import { USER_SCHEMA } from '~/models/schemas/User.schema'
 import refreshTokenService from '~/services/refresh_tokens.service'
 import userService from '~/services/users.service'
 import { TokenPayload } from '~/type'
 import { sendEmailVerification } from '~/utils/email'
+import { ErrorWithMessage } from '~/utils/error'
 import JwtModule from '~/utils/jwt'
 import { responseSuccess } from '~/utils/response'
 
@@ -77,7 +79,13 @@ const verifyEmail = async (req: Request<ParamsDictionary, any, any, any>, res: R
   })
 }
 const resendEmailVerification = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
-  const { user_id } = req.decoded_access_token as TokenPayload
+  const { user_id } = req.query
+  if (!user_id) {
+    throw new ErrorWithMessage({
+      message: 'Thiếu thông tin user_id',
+      status: httpStatusCode.BAD_REQUEST
+    })
+  }
   const result = await userService.resendEmailVerification(user_id)
   if (!result) {
     return responseSuccess(res, {

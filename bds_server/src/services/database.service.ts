@@ -8,6 +8,7 @@ import { IMAGE_SCHEMA } from '~/models/schemas/Image.schema'
 import { PROPERTY_SCHEMA } from '~/models/schemas/Property.schema'
 import { REAL_ESTATE_NEW_SCHEMA } from '~/models/schemas/RealEstateNew.schema'
 import { REFRESH_TOKEN_SCHEMA } from '~/models/schemas/RefreshToken.schema'
+import { REPORT_INTERACTION_SCHEMA } from '~/models/schemas/Report.schema'
 import { USER_SCHEMA } from '~/models/schemas/User.schema'
 
 class DatabaseService {
@@ -56,6 +57,9 @@ class DatabaseService {
   }
   get favorites(): Collection<FAVORITE_SCHEMA> {
     return this.db.collection(env_config.DB_COLLECTION.FAVORITES as string)
+  }
+  get reports_interaction(): Collection<REPORT_INTERACTION_SCHEMA> {
+    return this.db.collection(env_config.DB_COLLECTION.REPORTS_INTERACTION as string)
   }
 }
 const databaseService = new DatabaseService()

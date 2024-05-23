@@ -177,6 +177,20 @@ class UserService {
       { returnDocument: 'after' }
     )
   }
+  async blockPost(id: string, post_id: string) {
+    return databaseService.users.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $push: { blocked_posts: new ObjectId(post_id) }, $set: { updated_at: new Date() } },
+      { returnDocument: 'after' }
+    )
+  }
+  async unblockPost(id: string, post_id: string) {
+    return databaseService.users.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $pull: { blocked_posts: new ObjectId(post_id) }, $set: { updated_at: new Date() } },
+      { returnDocument: 'after' }
+    )
+  }
 }
 
 const userService = new UserService()

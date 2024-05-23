@@ -67,11 +67,7 @@ userRoutes.get(
  * path: /users/resend-email-verification
  * body: { email: string }
  */
-userRoutes.get(
-  '/resend-email-verification',
-  commonMiddlewares.accessTokenValidator,
-  wrapRequestHandler(commonControllers.resendEmailVerification)
-)
+userRoutes.get('/resend-email-verification', wrapRequestHandler(commonControllers.resendEmailVerification))
 /**
  * description: Forgot password
  * method: POST

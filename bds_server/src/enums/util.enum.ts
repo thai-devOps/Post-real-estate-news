@@ -60,3 +60,20 @@ export enum DIRECTION {
   // Tây Nam
   WEST_SOUTH = 'west_south'
 }
+export enum INTERACTION_TYPE {
+  REPORT = 'REPORT',
+  REPLY = 'REPLY'
+}
+export enum REPORT_TYPE {
+  POST = 'POST',
+  COMMENT = 'COMMENT',
+  NEWS = 'NEWS',
+  USER = 'USER',
+  PROJECT = 'PROJECT'
+}
+export enum REPORT_STATUS {
+  RESOLVED = 'RESOLVED',
+  PENDING = 'PENDING',
+  CANCELLED = 'CANCELLED',
+  REJECTED = 'REJECTED'
+}
