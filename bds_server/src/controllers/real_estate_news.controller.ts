@@ -7,13 +7,15 @@ import { FURNITURE_DETAILS_REQUEST_BODY } from '~/models/requests/furniture_deta
 import { REAL_ESTATE_NEW_QUERY, REAL_ESTATE_NEW_REQUEST_BODY } from '~/models/requests/real_estate_new.request'
 import furnitureDetailsService from '~/services/furniture_details.service'
 import realEstateNewsService from '~/services/real_estate_news.service'
+import { TokenPayload } from '~/type'
 import { responseSuccess } from '~/utils/response'
 const createRealEstateNew = async (
   req: Request<ParamsDictionary, any, REAL_ESTATE_NEW_REQUEST_BODY, any>,
   res: Response
 ) => {
   const payload = req.body
-  const createNewResult = await realEstateNewsService.create(payload)
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const createNewResult = await realEstateNewsService.create(payload, user_id)
   return responseSuccess(res, {
     message: 'Tạo tin bất động sản thành công',
     data: createNewResult

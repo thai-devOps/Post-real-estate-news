@@ -17,6 +17,7 @@ import reportsInteractionRoutes from './routes/reports_interaction.routes'
 import realEstateNewsService from './services/real_estate_news.service'
 import { calculateRaw, normalize } from './utils/caculateRating'
 import projectRoutes from './routes/projects.routes'
+import newsRoutes from './routes/news.routes'
 const app = express()
 app.use(
   cors({
@@ -60,7 +61,9 @@ app.use('/properties', propertiesRoutes)
 app.use('/furnitures', furnituresRoutes)
 app.use('/comments', commentsRoutes)
 app.use('/favorites', favoritesRoutes)
-app.use('/reports-interaction', reportsInteractionRoutes), app.use('/projects', projectRoutes)
+app.use('/reports-interaction', reportsInteractionRoutes)
+app.use('/projects', projectRoutes)
+app.use('/news', newsRoutes)
 // error handler
 app.use(defaultErrorHandler)
 

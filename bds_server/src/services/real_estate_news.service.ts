@@ -5,12 +5,12 @@ import { ObjectId } from 'mongodb'
 import { POST_STATUS } from '~/enums/util.enum'
 
 class RealEstateNewsService {
-  async create(payload: REAL_ESTATE_NEW_REQUEST_BODY) {
+  async create(payload: REAL_ESTATE_NEW_REQUEST_BODY, user_id: string) {
     return await databaseService.real_estate_news.insertOne(
       new REAL_ESTATE_NEW_SCHEMA({
         ...payload,
         property_type_id: new ObjectId(payload.property_type_id),
-        posted_by: new ObjectId(payload.posted_by),
+        posted_by: new ObjectId(user_id)
         // convert string to date
       })
     )

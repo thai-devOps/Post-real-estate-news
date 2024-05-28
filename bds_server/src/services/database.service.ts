@@ -5,6 +5,7 @@ import { FAVORITE_SCHEMA } from '~/models/schemas/Favorite.schema'
 import { FURNITURE_SCHEMA } from '~/models/schemas/Furniture.schema'
 import { FURNITURE_DETAIL_SCHEMA } from '~/models/schemas/FurnitureDetail.schema'
 import { IMAGE_SCHEMA } from '~/models/schemas/Image.schema'
+import { NEWS_SCHEMA } from '~/models/schemas/News.schema'
 import { PROJECT_SCHEMA } from '~/models/schemas/Project.schema'
 import { PROPERTY_SCHEMA } from '~/models/schemas/Property.schema'
 import { REAL_ESTATE_NEW_SCHEMA } from '~/models/schemas/RealEstateNew.schema'
@@ -64,6 +65,9 @@ class DatabaseService {
   }
   get projects(): Collection<PROJECT_SCHEMA> {
     return this.db.collection(env_config.DB_COLLECTION.PROJECTS as string)
+  }
+  get news(): Collection<NEWS_SCHEMA> {
+    return this.db.collection(env_config.DB_COLLECTION.NEWS as string)
   }
 }
 const databaseService = new DatabaseService()
