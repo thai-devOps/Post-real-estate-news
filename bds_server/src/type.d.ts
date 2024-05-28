@@ -2,6 +2,7 @@ import { ACCOUNT_TYPE, ROLE_TYPE, USER_VERIFY_STATUS } from './enums/user.enum'
 import { TOKEN_TYPE } from ' ~/enums/util.enum'
 import { USER_SCHEMA } from './models/schemas/User.schema'
 import { JwtPayload } from 'jsonwebtoken'
+import { UNIT_TRADING_PRICE } from './enums/util.enum'
 declare module 'express' {
   interface Request {
     user?: USER_SCHEMA
@@ -11,10 +12,12 @@ declare module 'express' {
     decoded_forgot_password_token?: TokenPayload
   }
 }
-
 interface ImageTypes {
+  _id: string
   public_id: string
   url: string
+  created_at: string
+  updated_at: string
 }
 interface AddressTypes {
   details: string
@@ -35,4 +38,10 @@ interface TokenPayload extends JwtPayload {
   account_type: ACCOUNT_TYPE
   iat: number
   exp: number
+}
+interface PriceRange {
+  min: number
+  max: number
+  // Đơn vị tiền tệ
+  unit: UNIT_TRADING_PRICE
 }

@@ -45,11 +45,7 @@ realEstateNewsRoutes.get('/', wrapRequestHandler(realEstateNewsControllers.getRe
  * }
  * }
  */
-realEstateNewsRoutes.get(
-  '/:id',
-  commonMiddlewares.accessTokenValidator,
-  wrapRequestHandler(realEstateNewsControllers.getRealEstateNewsById)
-)
+realEstateNewsRoutes.get('/:id', wrapRequestHandler(realEstateNewsControllers.getRealEstateNewsById))
 /**
  * description: Get all post by user id
  * method: GET

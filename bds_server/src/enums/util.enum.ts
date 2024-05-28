@@ -18,7 +18,9 @@ export enum BUYING_STATUS {
   // Đã bán
   SOLD = 'sold',
   // Đang cập nhật
-  UPDATING = 'updating'
+  UPDATING = 'updating',
+  // Đang nhận đặt chỗ
+  BOOKING = 'booking'
 }
 export enum POST_STATUS {
   // Đang chờ xác nhận
@@ -76,4 +78,24 @@ export enum REPORT_STATUS {
   PENDING = 'PENDING',
   CANCELLED = 'CANCELLED',
   REJECTED = 'REJECTED'
+}
+export enum UNIT {
+  // m2
+  SQUARE_METER = 'm2',
+  // m
+  METER = 'm',
+  // km
+  KILOMETER = 'km',
+  // ha
+  HECTARE = 'ha'
+}
+export enum UNIT_TRADING_PRICE {
+  // tỷ / căn
+  BILLION_PER_UNIT = 'tỷ/căn',
+  // triệu / m2
+  MILLION_PER_SQUARE_METER = 'triệu/m2',
+  // triệu/tháng
+  MILLION_PER_MONTH = 'triệu/tháng',
+  // triệu/m2/tháng
+  MILLION_PER_SQUARE_METER_PER_MONTH = 'triệu/m2/tháng'
 }

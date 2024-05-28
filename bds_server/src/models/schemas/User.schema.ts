@@ -64,7 +64,13 @@ export class USER_SCHEMA {
     this.role = user.role || ROLE_TYPE.USER
     this.verify = user.verify || USER_VERIFY_STATUS.UNVERIFIED
     this.account_type = user.account_type
-    this.avatar = user.avatar || { public_id: '', url: '' }
+    this.avatar = user.avatar || {
+      _id: '',
+      public_id: '',
+      url: '',
+      created_at: '',
+      updated_at: ''
+    }
     this.address = user.address || ({ details: '', street: '', province: '', district: '', ward: '' } as AddressTypes)
     this.forgot_password_token = user.forgot_password_token || ''
     this.email_verify_token = user.email_verify_token || ''

@@ -101,13 +101,9 @@ const getRealEstateNews = async (req: Request<ParamsDictionary, any, any, any>, 
 const getRealEstateNewsById = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
   const { id } = req.params
   const realEstateNew = await realEstateNewsService.getById(id)
-  const furnitureDetails = await furnitureDetailsService.getFurnitureDetailsByPostId(id)
   return responseSuccess(res, {
     message: 'Lấy tin bất động sản theo id thành công',
-    data: {
-      ...realEstateNew,
-      furniture_details: furnitureDetails
-    }
+    data: realEstateNew
   })
 }
 const updateRealEstateNew = async (

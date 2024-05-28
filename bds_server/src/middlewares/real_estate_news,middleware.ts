@@ -177,28 +177,48 @@ const createValidator = validateSchema(
         errorMessage: 'Phường định dạng không hợp lệ'
       }
     },
-    size: {
+    area: {
       in: ['body'],
       notEmpty: {
-        errorMessage: 'Kích thước không được để trống'
+        errorMessage: 'Diện tích không được để trống'
       }
     },
-    'size.width': {
+    'area.value': {
       in: ['body'],
       notEmpty: {
-        errorMessage: 'Chiều rộng không được để trống'
+        errorMessage: 'Giá trị không được để trống'
       },
       isNumeric: {
-        errorMessage: 'Chiều rộng phải là số'
+        errorMessage: 'Giá trị phải là số'
       }
     },
-    'size.height': {
+    'area.unit': {
       in: ['body'],
       notEmpty: {
-        errorMessage: 'Chiều cao không được để trống'
+        errorMessage: 'Đơn vị không được để trống'
+      },
+      isString: {
+        errorMessage: 'Đơn vị định dạng không hợp lệ'
+      }
+    },
+    frontage: {
+      in: ['body'],
+      optional: true,
+      notEmpty: {
+        errorMessage: 'Mặt tiền không được để trống'
       },
       isNumeric: {
-        errorMessage: 'Chiều cao phải là số'
+        errorMessage: 'Mặt tiền phải là số'
+      }
+    },
+    entrance: {
+      in: ['body'],
+      optional: true,
+      notEmpty: {
+        errorMessage: 'Đường vào không được để trống'
+      },
+      isNumeric: {
+        errorMessage: 'Đường vào phải là số'
       }
     },
     direction: {
@@ -258,24 +278,6 @@ const createValidator = validateSchema(
         errorMessage: 'Hình ảnh không được để trống'
       }
     },
-    buying_status: {
-      in: ['body'],
-      notEmpty: {
-        errorMessage: 'Trạng thái mua bán không được để trống'
-      },
-      isString: {
-        errorMessage: 'Trạng thái mua bán định dạng không hợp lệ'
-      }
-    },
-    posted_by: {
-      in: ['body'],
-      notEmpty: {
-        errorMessage: 'Người đăng không được để trống'
-      },
-      isString: {
-        errorMessage: 'Người đăng định dạng không hợp lệ'
-      }
-    },
     property_type_id: {
       in: ['body'],
       notEmpty: {
@@ -283,15 +285,6 @@ const createValidator = validateSchema(
       },
       isString: {
         errorMessage: 'Loại bất động sản định dạng không hợp lệ'
-      }
-    },
-    time_existed: {
-      in: ['body'],
-      notEmpty: {
-        errorMessage: 'Thời gian tồn tại không được để trống'
-      },
-      isNumeric: {
-        errorMessage: 'Thời gian tồn tại phải là số'
       }
     },
     number_of_bedrooms: {
@@ -349,15 +342,6 @@ const createValidator = validateSchema(
       in: ['body'],
       notEmpty: {
         errorMessage: 'Tiện ích ngoại không được để trống'
-      }
-    },
-    published_at: {
-      in: ['body'],
-      notEmpty: {
-        errorMessage: 'Ngày đăng không được để trống'
-      },
-      isISO8601: {
-        errorMessage: 'Ngày đăng định dạng không hợp lệ'
       }
     }
   })

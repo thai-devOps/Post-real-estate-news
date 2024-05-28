@@ -12,7 +12,6 @@ class RealEstateNewsService {
         property_type_id: new ObjectId(payload.property_type_id),
         posted_by: new ObjectId(payload.posted_by),
         // convert string to date
-        published_at: new Date(payload.published_at)
       })
     )
   }
@@ -23,12 +22,17 @@ class RealEstateNewsService {
     sort_by,
     condition
   }: {
-    page: number
-    limit: number
-    sort_by: string
-    order_by: string
-    condition: any
+    page?: number
+    limit?: number
+    sort_by?: string
+    order_by?: string
+    condition?: any
   }) {
+    if (!page) page = 1
+    if (!limit) limit = 10
+    if (!sort_by) sort_by = 'rating'
+    if (!order_by) order_by = 'desc'
+
     const result = await Promise.all([
       databaseService.real_estate_news
         .find(condition)
@@ -49,9 +53,11 @@ class RealEstateNewsService {
     }
   }
   public async getById(id: string) {
-    return await databaseService.real_estate_news.findOne({
-      _id: new ObjectId(id)
-    })
+    return await databaseService.real_estate_news.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $inc: { view: 1 } },
+      { returnDocument: 'after' }
+    )
   }
   public async update(id: string, payload: REAL_ESTATE_NEW_REQUEST_BODY) {
     return await databaseService.real_estate_news.findOneAndUpdate(
@@ -62,7 +68,6 @@ class RealEstateNewsService {
           property_type_id: new ObjectId(payload.property_type_id),
           posted_by: new ObjectId(payload.posted_by),
           // convert string to date
-          published_at: new Date(payload.published_at),
           updated_at: new Date()
         }
       }
@@ -95,6 +100,20 @@ class RealEstateNewsService {
 
   public async getRealEstateNewsByUserId(user_id: string) {
     return await databaseService.real_estate_news.find({ posted_by: new ObjectId(user_id) }).toArray()
+  }
+  public async getAllNotPagination() {
+    return await databaseService.real_estate_news.find({}).toArray()
+  }
+  public async updateRating(id: string, rating: number) {
+    return await databaseService.real_estate_news.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          rating,
+          updated_at: new Date()
+        }
+      }
+    )
   }
 }
 const realEstateNewsService = new RealEstateNewsService()

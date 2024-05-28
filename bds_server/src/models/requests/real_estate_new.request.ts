@@ -1,4 +1,4 @@
-import { DIRECTION, POST_TYPE, BUYING_STATUS, POST_STATUS } from '~/enums/util.enum'
+import { DIRECTION, POST_TYPE, BUYING_STATUS, POST_STATUS, UNIT } from '~/enums/util.enum'
 import { AddressTypes, ImageTypes } from '~/type'
 export type REAL_ESTATE_NEW_REQUEST_BODY = {
   title: string
@@ -16,9 +16,9 @@ export type REAL_ESTATE_NEW_REQUEST_BODY = {
   address: AddressTypes
   // thông tin diện tích
   // thông tin về kích thước
-  size: {
-    width: number // chiều rộng
-    height: number // chiều dài
+  area: {
+    value: number
+    unit: UNIT
   }
   // Thông tin mặt tiền
   frontage?: number // Mặt tiền (m)
@@ -36,16 +36,16 @@ export type REAL_ESTATE_NEW_REQUEST_BODY = {
   // thông tin hình ảnh
   image: ImageTypes[]
   // thông tin mua bán
-  buying_status: BUYING_STATUS
+  buying_status?: BUYING_STATUS
   // thông tin người đăng
-  posted_by: string // Người đăng
+  posted_by?: string // Người đăng
   // thông tin trạng thái
   status: POST_STATUS
   // thông tin loại bất động sản
   property_type_id: string
   view: number
   // thời gian tồn tại tin
-  time_existed: number //ví dụ: 30 ngày
+  time_existed?: number //ví dụ: 30 ngày
   // tiện ích nội ngoại khu
   number_of_bedrooms: number // Số phòng ngủ
   number_of_toilets: number // Số phòng vệ sinh
@@ -58,8 +58,10 @@ export type REAL_ESTATE_NEW_REQUEST_BODY = {
   internal_amenities: string[]
   external_amenities: string[]
   // Ngày đăng tin
-  published_at: Date
+  published_at?: Date
   // Ngày hết hạn
+  created_at?: Date
+  updated_at?: Date
 }
 // queries
 export type REAL_ESTATE_NEW_QUERY = {

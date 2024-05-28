@@ -5,6 +5,7 @@ import { FAVORITE_SCHEMA } from '~/models/schemas/Favorite.schema'
 import { FURNITURE_SCHEMA } from '~/models/schemas/Furniture.schema'
 import { FURNITURE_DETAIL_SCHEMA } from '~/models/schemas/FurnitureDetail.schema'
 import { IMAGE_SCHEMA } from '~/models/schemas/Image.schema'
+import { PROJECT_SCHEMA } from '~/models/schemas/Project.schema'
 import { PROPERTY_SCHEMA } from '~/models/schemas/Property.schema'
 import { REAL_ESTATE_NEW_SCHEMA } from '~/models/schemas/RealEstateNew.schema'
 import { REFRESH_TOKEN_SCHEMA } from '~/models/schemas/RefreshToken.schema'
@@ -60,6 +61,9 @@ class DatabaseService {
   }
   get reports_interaction(): Collection<REPORT_INTERACTION_SCHEMA> {
     return this.db.collection(env_config.DB_COLLECTION.REPORTS_INTERACTION as string)
+  }
+  get projects(): Collection<PROJECT_SCHEMA> {
+    return this.db.collection(env_config.DB_COLLECTION.PROJECTS as string)
   }
 }
 const databaseService = new DatabaseService()
