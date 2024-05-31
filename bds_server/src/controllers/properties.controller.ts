@@ -19,6 +19,20 @@ const getProperties = async (req: Request<ParamsDictionary, any, any, PROPERTY_R
     data: result
   })
 }
+const getPropertyByID = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+  const { id } = req.params
+  const result = await propertiesService.getOne(id)
+  if (!result) {
+    return responseSuccess(res, {
+      message: 'Loại hình bất động sản không tồn tại',
+      data: null
+    })
+  }
+  return responseSuccess(res, {
+    message: 'Lấy loại hình bất động sản thành công',
+    data: result
+  })
+}
 const editProperty = async (req: Request<ParamsDictionary, any, PROPERTY_REQUEST_BODY, any>, res: Response) => {
   const { id } = req.params
   const payload = req.body
@@ -63,6 +77,7 @@ const propertiesControllers = {
   editProperty,
   deleteOne,
   deleteMany,
+  getPropertyByID,
   deleteAll
 }
 export default propertiesControllers

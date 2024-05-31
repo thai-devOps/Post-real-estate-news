@@ -28,6 +28,13 @@ propertiesRoutes.post(
  * query: PROPERTY_REQUEST_QUERY
  */
 propertiesRoutes.get('/', wrapRequestHandler(propertiesControllers.getProperties))
+
+/**
+ * description: Get a property by id
+ * method: GET
+ * path: /properties/:id
+ */
+propertiesRoutes.get('/:id', wrapRequestHandler(propertiesControllers.getPropertyByID))
 /**
  * description: Edit a property
  * method: PUT
@@ -42,6 +49,7 @@ propertiesRoutes.get('/', wrapRequestHandler(propertiesControllers.getProperties
 propertiesRoutes.put(
   '/:id',
   commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isAdmin,
   propertiesMiddlewares.createPropertyValidator,
   wrapRequestHandler(propertiesControllers.editProperty)
 )
@@ -55,7 +63,12 @@ propertiesRoutes.put(
  * }
  * }
  */
-propertiesRoutes.delete('/delete-all', wrapRequestHandler(propertiesControllers.deleteAll))
+propertiesRoutes.delete(
+  '/delete-all',
+  commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isAdmin,
+  wrapRequestHandler(propertiesControllers.deleteAll)
+)
 /**
  * description: Delete many properties
  * method: DELETE
@@ -67,6 +80,7 @@ propertiesRoutes.delete('/delete-all', wrapRequestHandler(propertiesControllers.
 propertiesRoutes.delete(
   '/delete-many',
   commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isAdmin,
   wrapRequestHandler(propertiesControllers.deleteMany)
 )
 /**
@@ -82,6 +96,7 @@ propertiesRoutes.delete(
 propertiesRoutes.delete(
   '/:id',
   commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isAdmin,
   wrapRequestHandler(propertiesControllers.deleteOne)
 )
 export default propertiesRoutes

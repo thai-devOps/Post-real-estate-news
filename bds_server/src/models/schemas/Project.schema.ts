@@ -18,10 +18,7 @@ interface ProjectTypes {
     // description
     description: string
     // một số dự án nổi bật
-    projects: {
-      name: string
-      image: ImageTypes
-    }[]
+    projects: string
   } // thông tin nhà đầu tư
   total_area: {
     value: number
@@ -77,10 +74,7 @@ export class PROJECT_SCHEMA {
     establish_date: string
     number_of_projects: number
     description: string
-    projects: {
-      name: string
-      image: ImageTypes
-    }[]
+    projects: string
   }
   total_area: {
     value: number

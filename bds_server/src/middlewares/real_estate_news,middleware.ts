@@ -177,6 +177,24 @@ const createValidator = validateSchema(
         errorMessage: 'Phường định dạng không hợp lệ'
       }
     },
+    'address.street': {
+      in: ['body'],
+      notEmpty: {
+        errorMessage: 'Đường không được để trống'
+      },
+      isString: {
+        errorMessage: 'Đường định dạng không hợp lệ'
+      }
+    },
+    'address.details': {
+      in: ['body'],
+      notEmpty: {
+        errorMessage: 'Địa chỉ chi tiết không được để trống'
+      },
+      isString: {
+        errorMessage: 'Địa chỉ chi tiết định dạng không hợp lệ'
+      }
+    },
     area: {
       in: ['body'],
       notEmpty: {
@@ -203,7 +221,6 @@ const createValidator = validateSchema(
     },
     frontage: {
       in: ['body'],
-      optional: true,
       notEmpty: {
         errorMessage: 'Mặt tiền không được để trống'
       },
@@ -213,7 +230,6 @@ const createValidator = validateSchema(
     },
     entrance: {
       in: ['body'],
-      optional: true,
       notEmpty: {
         errorMessage: 'Đường vào không được để trống'
       },

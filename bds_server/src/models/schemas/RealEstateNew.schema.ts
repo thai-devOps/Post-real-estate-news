@@ -80,7 +80,7 @@ export class REAL_ESTATE_NEW_SCHEMA {
     is_for_sell: boolean // true: bán, false: cho thuê
     is_negotiable: boolean // có thể thương lượng
     // thuê theo tháng hay năm
-    rental_period: string
+    rental_period: string // 'month' | 'year' | 'none'
     deposit: number // tiền cọc
   }
   // Thông tin địa chỉ

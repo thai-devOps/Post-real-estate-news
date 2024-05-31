@@ -32,11 +32,15 @@ reportsInteractionRoutes.put(
 )
 /**
  *description: Get report by type
-  *method: GET
-  *path: /reports-interaction
-  *query: type
+ *method: GET
+ *path: /reports-interaction
+ *query: type
  */
-reportsInteractionRoutes.get('/', commonMiddlewares.accessTokenValidator, wrapRequestHandler(reportsInteractionControllers.getReportsByType))
+reportsInteractionRoutes.get(
+  '/',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(reportsInteractionControllers.getReportsByType)
+)
 /**
  * description: Get report by id
  * method: GET

@@ -1,6 +1,13 @@
 import nodemailer from 'nodemailer'
 import env_config from '~/configs/env.config'
 import { ACCOUNT_TYPE, ROLE_TYPE } from '~/enums/user.enum'
+import { PAYMENT_SCHEMA } from '~/models/schemas/Payment.schema'
+import { USER_SCHEMA } from '~/models/schemas/User.schema'
+import { VIP_PACKAGE_SCHEMA } from '~/models/schemas/VipPackage.schema'
+import { formatCurrency, handlePriceDiscount } from './formatCurrency'
+import { DISCOUNT_TYPE } from '~/enums/util.enum'
+import { capitalize } from 'lodash'
+import { VIP_USER_DETAIL_SCHEMA } from '~/models/schemas/VipUserDetail.schema'
 
 export const sendEmailVerification = async (
   email: string,
@@ -112,6 +119,162 @@ export const sendEmailResetPassword = async ({
     return await transporter.sendMail({
       from: env_config.EMAIL_AUTH_USER,
       to: email,
+      subject: subject,
+      html: htmlContent
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+export const sendEmailSignVipSuccess = async ({
+  user,
+  payment,
+  vip_package,
+  vip_detail,
+  subject
+}: {
+  user: USER_SCHEMA
+  payment: PAYMENT_SCHEMA
+  vip_package: VIP_PACKAGE_SCHEMA
+  vip_detail: VIP_USER_DETAIL_SCHEMA
+  subject: string
+}) => {
+  try {
+    const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký VIP Thành Công</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #4CAF50;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Đăng Ký VIP Thành Công!</h1>
+        <p>Cảm ơn bạn đã đăng ký gói VIP của chúng tôi.</p>
+        <table>
+            <tr>
+                <th>Thông tin tài khoản</th>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong>Tên:</strong></td>
+                <td>${user.full_name}</td>
+            </tr>
+            <tr>
+                <td><strong>Email:</strong></td>
+                <td>${user.email}</td>
+            </tr>
+            <tr>
+                <th>Chi tiết gói VIP</th>
+                <td></td>
+            </tr>
+            <tr>
+                <td><strong>Giá gói VIP:</strong></td>
+                <td>${formatCurrency(vip_package.price)}</td>
+            </tr>
+            <tr>
+                <td><strong>Giảm giá:</strong></td>
+                <td>${
+                  vip_package.discount.status
+                    ? vip_package.discount.type === DISCOUNT_TYPE.MONEY
+                      ? formatCurrency(vip_package.discount.value)
+                      : `${vip_package.discount.value}%`
+                    : ''
+                }</td>
+            </tr>
+            <tr>
+                <td><strong>Thành tiền:</strong></td>
+                <td>${formatCurrency(handlePriceDiscount(vip_package.price, vip_package.discount))}</td>
+            </tr>
+            <tr>
+                <td><strong>Kỳ thanh toán tiếp theo:</strong></td>
+                <td>${new Date(vip_detail.end_time).toLocaleDateString('vi-VN')}</td>
+            </tr>
+            <tr>
+                <td><strong>Phương thức thanh toán:</strong></td>
+                <td>${capitalize(payment.payment_method)}</td>
+            </tr>
+        </table>
+        <a href="${env_config.CLIENT_PORTS}" class="button">Quay về trang chủ</a>
+    </div>
+</body>
+</html>
+
+`
+    const transporter = nodemailer.createTransport({
+      host: env_config.EMAIL_HOST,
+      service: env_config.EMAIL_SERVICE,
+      port: Number(env_config.EMAIL_PORT),
+      secure: Boolean(env_config.EMAIL_SERCURE),
+      auth: {
+        user: env_config.EMAIL_AUTH_USER,
+        pass: env_config.EMAIL_AUTH_PASS
+      }
+    })
+    return await transporter.sendMail({
+      from: env_config.EMAIL_AUTH_USER,
+      to: user.email,
       subject: subject,
       html: htmlContent
     })

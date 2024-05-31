@@ -99,3 +99,28 @@ export enum UNIT_TRADING_PRICE {
   // triệu/m2/tháng
   MILLION_PER_SQUARE_METER_PER_MONTH = 'triệu/m2/tháng'
 }
+export enum DISCOUNT_TYPE {
+  // %
+  PERCENT = '%',
+  // đ
+  MONEY = 'đ'
+  //
+}
+export enum PAYMENT_METHOD {
+  PAYPAL = 'paypal',
+  VNPAY = 'vnpay',
+  MOMO = 'momo'
+}
+export enum PAYMENT_STATUS {
+  PENDING = 'pending',
+  SUCCESS = 'success',
+  FAILED = 'failed'
+}
+export enum VIP_STATUS {
+  //Còn hiệu lực
+  ACTIVE = 'active',
+  // Sắp hết hạn
+  EXPIRING = 'expiring',
+  // Đã hết hạn
+  EXPIRED = 'expired'
+}

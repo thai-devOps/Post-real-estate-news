@@ -16,10 +16,7 @@ export interface PROJECT_REQUEST_BODY {
     // description
     description: string
     // một số dự án nổi bật
-    projects: {
-      name: string
-      image: ImageTypes
-    }[]
+    projects: string
   } // thông tin nhà đầu tư
   total_area: {
     value: number

@@ -6,12 +6,15 @@ import { FURNITURE_SCHEMA } from '~/models/schemas/Furniture.schema'
 import { FURNITURE_DETAIL_SCHEMA } from '~/models/schemas/FurnitureDetail.schema'
 import { IMAGE_SCHEMA } from '~/models/schemas/Image.schema'
 import { NEWS_SCHEMA } from '~/models/schemas/News.schema'
+import { PAYMENT_SCHEMA } from '~/models/schemas/Payment.schema'
 import { PROJECT_SCHEMA } from '~/models/schemas/Project.schema'
 import { PROPERTY_SCHEMA } from '~/models/schemas/Property.schema'
 import { REAL_ESTATE_NEW_SCHEMA } from '~/models/schemas/RealEstateNew.schema'
 import { REFRESH_TOKEN_SCHEMA } from '~/models/schemas/RefreshToken.schema'
 import { REPORT_INTERACTION_SCHEMA } from '~/models/schemas/Report.schema'
 import { USER_SCHEMA } from '~/models/schemas/User.schema'
+import { VIP_PACKAGE_SCHEMA } from '~/models/schemas/VipPackage.schema'
+import { VIP_USER_DETAIL_SCHEMA } from '~/models/schemas/VipUserDetail.schema'
 
 class DatabaseService {
   private client: MongoClient
@@ -68,6 +71,15 @@ class DatabaseService {
   }
   get news(): Collection<NEWS_SCHEMA> {
     return this.db.collection(env_config.DB_COLLECTION.NEWS as string)
+  }
+  get vip_packages(): Collection<VIP_PACKAGE_SCHEMA> {
+    return this.db.collection(env_config.DB_COLLECTION.VIP_PACKAGES as string)
+  }
+  get payments(): Collection<PAYMENT_SCHEMA> {
+    return this.db.collection(env_config.DB_COLLECTION.PAYMENTS as string)
+  }
+  get vip_user_details(): Collection<VIP_USER_DETAIL_SCHEMA> {
+    return this.db.collection(env_config.DB_COLLECTION.VIP_USER_DETAILS as string)
   }
 }
 const databaseService = new DatabaseService()

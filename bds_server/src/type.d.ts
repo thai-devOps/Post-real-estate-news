@@ -21,7 +21,6 @@ interface ImageTypes {
 }
 interface AddressTypes {
   details: string
-  street: string
   province: string
   district: string
   ward: string

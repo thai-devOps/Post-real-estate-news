@@ -18,6 +18,9 @@ import realEstateNewsService from './services/real_estate_news.service'
 import { calculateRaw, normalize } from './utils/caculateRating'
 import projectRoutes from './routes/projects.routes'
 import newsRoutes from './routes/news.routes'
+import vipPackagesRoutes from './routes/vip_packages.routes'
+import paymentsRoutes from './routes/payments.routes'
+import paypalService from './paypal_api';
 const app = express()
 app.use(
   cors({
@@ -29,10 +32,13 @@ app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, './views'))
-
-app.get('', (req, res) => {
+app.get('/upload-image-example', (req, res) => {
   res.render('uploadImage')
 })
+app.get('', (req, res) => {
+  return res.render('checkout')
+})
+
 // Connect to the database
 databaseService.connect()
 app.use('/real-estate-news', realEstateNewsRoutes)
@@ -55,6 +61,27 @@ cron.schedule('0 0 * * *', async () => {
 })
 
 // Routes
+app.post('/api/orders', async (req, res) => {
+  try {
+    // use the cart information passed from the front-end to calculate the order amount detals
+    const { cart } = req.body
+    const { jsonResponse, httpStatusCode } = await paypalService.createOrder(cart)
+    res.status(httpStatusCode).json(jsonResponse)
+  } catch (error) {
+    console.error('Failed to create order:', error)
+    res.status(500).json({ error: 'Failed to create order.' })
+  }
+}) 
+app.post('/api/orders/:orderID/capture', async (req, res) => {
+  try {
+    const { orderID } = req.params
+    const { jsonResponse, httpStatusCode } = await paypalService.captureOrder(orderID)
+    res.status(httpStatusCode).json(jsonResponse)
+  } catch (error) {
+    console.error('Failed to create order:', error)
+    res.status(500).json({ error: 'Failed to capture order.' })
+  }
+})
 app.use('/users', userRoutes)
 app.use('/upload', uploadImagesRoutes)
 app.use('/properties', propertiesRoutes)
@@ -64,6 +91,8 @@ app.use('/favorites', favoritesRoutes)
 app.use('/reports-interaction', reportsInteractionRoutes)
 app.use('/projects', projectRoutes)
 app.use('/news', newsRoutes)
+app.use('/vip-packages', vipPackagesRoutes)
+app.use('/payments', paymentsRoutes)
 // error handler
 app.use(defaultErrorHandler)
 
