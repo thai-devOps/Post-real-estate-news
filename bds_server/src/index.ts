@@ -20,7 +20,8 @@ import projectRoutes from './routes/projects.routes'
 import newsRoutes from './routes/news.routes'
 import vipPackagesRoutes from './routes/vip_packages.routes'
 import paymentsRoutes from './routes/payments.routes'
-import paypalService from './paypal_api';
+import paypalService from './paypal_api'
+import videoRoutes from './routes/video.routes'
 const app = express()
 app.use(
   cors({
@@ -36,7 +37,7 @@ app.get('/upload-image-example', (req, res) => {
   res.render('uploadImage')
 })
 app.get('', (req, res) => {
-  return res.render('checkout')
+  return res.render('upLoadVideo')
 })
 
 // Connect to the database
@@ -71,7 +72,7 @@ app.post('/api/orders', async (req, res) => {
     console.error('Failed to create order:', error)
     res.status(500).json({ error: 'Failed to create order.' })
   }
-}) 
+})
 app.post('/api/orders/:orderID/capture', async (req, res) => {
   try {
     const { orderID } = req.params
@@ -84,6 +85,7 @@ app.post('/api/orders/:orderID/capture', async (req, res) => {
 })
 app.use('/users', userRoutes)
 app.use('/upload', uploadImagesRoutes)
+app.use('/upload-video', videoRoutes)
 app.use('/properties', propertiesRoutes)
 app.use('/furnitures', furnituresRoutes)
 app.use('/comments', commentsRoutes)

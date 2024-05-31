@@ -1,12 +1,12 @@
 import { DIRECTION, POST_TYPE, BUYING_STATUS, POST_STATUS, UNIT } from '~/enums/util.enum'
-import { AddressTypes, ImageTypes } from '~/type'
+import { AddressTypes, ImageTypes, VideoType } from '~/type'
 export type REAL_ESTATE_NEW_REQUEST_BODY = {
   title: string
   description: string
   //Thông tin giá
   price: {
     value: number
-    unit: string
+    unit: 'Triệu' | 'Tỷ' | 'Trăm nghìn' | 'Nghìn'
     is_for_sell: boolean // true: bán, false: cho thuê
     is_negotiable: boolean // có thể thương lượng
     rental_period: string
@@ -34,7 +34,8 @@ export type REAL_ESTATE_NEW_REQUEST_BODY = {
   }
   type: POST_TYPE // Loại tin đăng ví dụ: "sell" | "rent"
   // thông tin hình ảnh
-  image: ImageTypes[]
+  images: ImageTypes[]
+  videos: VideoType[]
   // thông tin mua bán
   buying_status?: BUYING_STATUS
   // thông tin người đăng

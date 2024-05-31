@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import uploadImageControllers from '~/controllers/upload_images.controller'
-import commonMiddlewares from '~/middlewares/common.middleware'
 import upload from '~/storage/storage'
 import { wrapRequestHandler } from '~/utils/requestHandler'
 const uploadImagesRoutes = Router()

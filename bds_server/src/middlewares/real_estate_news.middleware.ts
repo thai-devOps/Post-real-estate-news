@@ -288,10 +288,16 @@ const createValidator = validateSchema(
         errorMessage: 'Loại tin định dạng không hợp lệ'
       }
     },
-    image: {
+    images: {
       in: ['body'],
       notEmpty: {
         errorMessage: 'Hình ảnh không được để trống'
+      }
+    },
+    videos: {
+      in: ['body'],
+      notEmpty: {
+        errorMessage: 'Video không được để trống'
       }
     },
     property_type_id: {

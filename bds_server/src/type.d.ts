@@ -19,6 +19,13 @@ interface ImageTypes {
   created_at: string
   updated_at: string
 }
+interface VideoType {
+  _id?: ObjectId
+  public_id: string
+  video_url: string
+  created_at?: Date
+  updated_at?: Date
+}
 interface AddressTypes {
   details: string
   province: string

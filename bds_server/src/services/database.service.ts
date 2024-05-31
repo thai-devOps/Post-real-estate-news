@@ -13,6 +13,7 @@ import { REAL_ESTATE_NEW_SCHEMA } from '~/models/schemas/RealEstateNew.schema'
 import { REFRESH_TOKEN_SCHEMA } from '~/models/schemas/RefreshToken.schema'
 import { REPORT_INTERACTION_SCHEMA } from '~/models/schemas/Report.schema'
 import { USER_SCHEMA } from '~/models/schemas/User.schema'
+import { VIDEO_SCHEMA } from '~/models/schemas/Video.schema'
 import { VIP_PACKAGE_SCHEMA } from '~/models/schemas/VipPackage.schema'
 import { VIP_USER_DETAIL_SCHEMA } from '~/models/schemas/VipUserDetail.schema'
 
@@ -80,6 +81,9 @@ class DatabaseService {
   }
   get vip_user_details(): Collection<VIP_USER_DETAIL_SCHEMA> {
     return this.db.collection(env_config.DB_COLLECTION.VIP_USER_DETAILS as string)
+  }
+  get videos(): Collection<VIDEO_SCHEMA> {
+    return this.db.collection(env_config.DB_COLLECTION.VIDEOS as string)
   }
 }
 const databaseService = new DatabaseService()

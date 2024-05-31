@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import realEstateNewsControllers from '~/controllers/real_estate_news.controller'
 import commonMiddlewares from '~/middlewares/common.middleware'
-import realEstateNewsMiddlewares from '~/middlewares/real_estate_news,middleware'
+import realEstateNewsMiddlewares from '~/middlewares/real_estate_news.middleware'
 import { wrapRequestHandler } from '~/utils/requestHandler'
 
 const realEstateNewsRoutes = Router()

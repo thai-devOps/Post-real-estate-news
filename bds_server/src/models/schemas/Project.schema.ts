@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb'
 import { BUYING_STATUS, UNIT } from '~/enums/util.enum'
-import { AddressTypes, ImageTypes, PriceRange } from '~/type'
+import { AddressTypes, ImageTypes, PriceRange, VideoType } from '~/type'
 
 interface ProjectTypes {
   _id?: ObjectId
@@ -10,77 +10,69 @@ interface ProjectTypes {
   // Địa chỉ hiển thị
   address: string
   investor: {
-    avartar: ImageTypes
+    avartar?: ImageTypes
     name: string
-    establish_date: string // ISO string
-    //số dự án
-    number_of_projects: number
-    // description
-    description: string
-    // một số dự án nổi bật
-    projects: string
-  } // thông tin nhà đầu tư
-  total_area: {
+    // Số dự án
+    number_of_projects: number // required
+    // mô tả
+    description?: string
+  } // Thông tin nhà đầu tư
+  area: {
     value: number
     unit: UNIT // m2
-  } // tổng diện tích
-  building_density: number // mật độ xây dựng (%)
-  scale: string // quy mô dự : 128 căn hộ, 2 tòa
-  legal: string // pháp lý
-  // tiến độ dự án
+  } // Tổng diện tích
+  scale: string // Quy mô dự án: 128 căn hộ, 2 tòa
+  legal: string // Pháp lý
+  // Tiến độ dự án
   progress: {
-    start_time: string // thời gian bắt đầu
-    handover_time: string // thời gian bàn giao 'Đã hoàn thành' | 'Đang thi công'|'Đang hoàn thiện'
-    end_time: string // thời gian kết thúc
-    description: string // mô tả tiến độ
+    start_time: string // Thời gian bắt đầu
+    handover_time: string // Thời gian bàn giao 'Đã hoàn thành' | 'Đang thi công' | 'Đang hoàn thiện'
+    end_time: string // Thời gian kết thúc
+    description: string // Mô tả tiến độ
   }
-  // trạng thái dự án
+  // Trạng thái dự án
   status: BUYING_STATUS // 'Đang mở bán' | 'Đang nhận đặt chỗ' | 'Đã bàn giao'
-  // tiện ích
-  amentities: {
-    description: string
-    items: {
-      name: string
-      image: ImageTypes
-    }
-  }
-  // Loai hinh du an
+  // Tiện ích nội khu
+  internal_amenities: string[]
+  // Tiện ích ngoại khu
+  external_amenities: string[]
+  // Loại hình dự án
   property_id: ObjectId
-  // Mặt bằng dự án
-  design: {
-    name: string
-    images: ImageTypes
+  // Giá bán
+  selling_prices: {
+    value: number
+    currency: string // e.g., 'USD', 'VND'
+    effective_date: Date // The date when this price becomes effective
   }[]
-  // Giá mua bán
-  trading_price: {
-    totalPrice: PriceRange
-    pricePerSquareMeter: PriceRange
-  }
   // Giá thuê
-  rental_price: PriceRange
+  rental_prices: {
+    value: number
+    currency: string // e.g., 'USD', 'VND'
+    frequency: 'daily' | 'monthly' | 'yearly' | 'quarterly'
+    effective_date: Date // The date when this price becomes effective
+  }[]
   // Hình ảnh dự án
   images: ImageTypes[]
+  videos: VideoType[]
   created_at?: Date
   updated_at?: Date
 }
+
 export class PROJECT_SCHEMA {
   _id: ObjectId
   name: string
   location: AddressTypes
   address: string
   investor: {
-    avartar: ImageTypes
+    avartar?: ImageTypes
     name: string
-    establish_date: string
     number_of_projects: number
-    description: string
-    projects: string
+    description?: string
   }
-  total_area: {
+  area: {
     value: number
     unit: UNIT
   }
-  building_density: number
   scale: string
   legal: string
   progress: {
@@ -90,26 +82,26 @@ export class PROJECT_SCHEMA {
     description: string
   }
   status: BUYING_STATUS
-  amentities: {
-    description: string
-    items: {
-      name: string
-      image: ImageTypes
-    }
-  }
+  internal_amenities: string[]
+  external_amenities: string[]
   property_id: ObjectId
-  design: {
-    name: string
-    images: ImageTypes
+  selling_prices: {
+    value: number
+    currency: string
+    effective_date: Date
   }[]
-  trading_price: {
-    totalPrice: PriceRange
-    pricePerSquareMeter: PriceRange
-  }
-  rental_price: PriceRange
+  // Giá thuê
+  rental_prices: {
+    value: number
+    currency: string
+    frequency: 'daily' | 'monthly' | 'yearly' | 'quarterly'
+    effective_date: Date
+  }[]
+  // Hình ảnh dự án
   images: ImageTypes[]
-  created_at: Date
-  updated_at: Date
+  videos: VideoType[]
+  created_at?: Date
+  updated_at?: Date
   constructor(data: ProjectTypes) {
     const date = new Date()
     this._id = data._id || new ObjectId()
@@ -117,18 +109,18 @@ export class PROJECT_SCHEMA {
     this.location = data.location
     this.address = data.address
     this.investor = data.investor
-    this.total_area = data.total_area
-    this.building_density = data.building_density
     this.scale = data.scale
+    this.area = data.area
+    this.selling_prices = data.selling_prices
+    this.rental_prices = data.rental_prices
+    this.internal_amenities = data.internal_amenities
+    this.external_amenities = data.external_amenities
     this.legal = data.legal
     this.progress = data.progress
     this.status = data.status
-    this.amentities = data.amentities
     this.property_id = data.property_id
-    this.design = data.design
-    this.trading_price = data.trading_price
-    this.rental_price = data.rental_price
     this.images = data.images
+    this.videos = data.videos
     this.created_at = data.created_at || date
     this.updated_at = data.updated_at || date
   }
