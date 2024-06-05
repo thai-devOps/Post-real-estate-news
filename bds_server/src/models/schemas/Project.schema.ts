@@ -53,7 +53,7 @@ interface ProjectTypes {
   }[]
   // Hình ảnh dự án
   images: ImageTypes[]
-  videos: VideoType[]
+  videos?: VideoType[]
   created_at?: Date
   updated_at?: Date
 }
@@ -120,7 +120,7 @@ export class PROJECT_SCHEMA {
     this.status = data.status
     this.property_id = data.property_id
     this.images = data.images
-    this.videos = data.videos
+    this.videos = data.videos || []
     this.created_at = data.created_at || date
     this.updated_at = data.updated_at || date
   }

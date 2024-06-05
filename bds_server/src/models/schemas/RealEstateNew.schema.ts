@@ -41,7 +41,7 @@ interface RealEstateNew {
   type: POST_TYPE // Loại tin đăng ví dụ: "sell" | "rent"
   // thông tin hình ảnh
   images: ImageTypes[]
-  videos: VideoType[]
+  videos?: VideoType[]
   // thông tin mua bán
   buying_status?: BUYING_STATUS
   // thông tin người đăng
@@ -153,7 +153,7 @@ export class REAL_ESTATE_NEW_SCHEMA {
     this.rating = data.rating || 0
     this.type = data.type
     this.images = data.images
-    this.videos = data.videos
+    this.videos = data.videos || []
     this.buying_status = data.buying_status || BUYING_STATUS.OPEN
     this.posted_by = data.posted_by
     this.status = data.status || POST_STATUS.PENDING

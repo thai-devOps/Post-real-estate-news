@@ -221,18 +221,20 @@ const createValidator = validateSchema(
     },
     frontage: {
       in: ['body'],
-      notEmpty: {
-        errorMessage: 'Mặt tiền không được để trống'
-      },
+      optional: true,
+      // notEmpty: {
+      //   errorMessage: 'Mặt tiền không được để trống'
+      // },
       isNumeric: {
         errorMessage: 'Mặt tiền phải là số'
       }
     },
     entrance: {
       in: ['body'],
-      notEmpty: {
-        errorMessage: 'Đường vào không được để trống'
-      },
+      optional: true,
+      // notEmpty: {
+      //   errorMessage: 'Đường vào không được để trống'
+      // },
       isNumeric: {
         errorMessage: 'Đường vào phải là số'
       }

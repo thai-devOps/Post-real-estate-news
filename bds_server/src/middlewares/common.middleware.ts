@@ -40,9 +40,7 @@ const registerBodyValidator = validateSchema(
         }
       },
       role: {
-        notEmpty: {
-          errorMessage: messages.errors.register.role.required
-        },
+        optional: true,
         custom: {
           options: async (value) => {
             if (!Object.values(ROLE_TYPE).includes(value)) {

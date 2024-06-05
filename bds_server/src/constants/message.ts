@@ -105,7 +105,7 @@ const messages = {
       },
       errors: {
         // sai thông tin đăng nhập
-        invalid: 'Thông tin đăng nhập không chính xác',
+        invalid: 'Thông tin đăng nhập không đúng',
         blocked: 'Tài khoản của bạn đã bị khóa, vui lòng liên hệ với quản trị viên để biết thêm chi tiết'
       }
     }

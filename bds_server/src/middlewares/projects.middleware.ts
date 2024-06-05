@@ -132,9 +132,10 @@ const createProjectValidator = validateSchema(
     },
     videos: {
       in: ['body'],
-      notEmpty: {
-        errorMessage: 'Vui lòng chọn video dự án'
-      }
+      optional: true
+      // notEmpty: {
+      //   errorMessage: 'Vui lòng chọn video dự án'
+      // }
     },
     internal_amenities: {
       in: ['body'],
