@@ -177,15 +177,6 @@ const createValidator = validateSchema(
         errorMessage: 'Phường định dạng không hợp lệ'
       }
     },
-    'address.street': {
-      in: ['body'],
-      notEmpty: {
-        errorMessage: 'Đường không được để trống'
-      },
-      isString: {
-        errorMessage: 'Đường định dạng không hợp lệ'
-      }
-    },
     'address.details': {
       in: ['body'],
       notEmpty: {
@@ -298,9 +289,10 @@ const createValidator = validateSchema(
     },
     videos: {
       in: ['body'],
-      notEmpty: {
-        errorMessage: 'Video không được để trống'
-      }
+      optional: true,
+      // notEmpty: {
+      //   errorMessage: 'Video không được để trống'
+      // }
     },
     property_type_id: {
       in: ['body'],
@@ -366,6 +358,13 @@ const createValidator = validateSchema(
       in: ['body'],
       notEmpty: {
         errorMessage: 'Tiện ích ngoại không được để trống'
+      }
+    },
+    furniture_details: {
+      in: ['body'],
+      optional: true,
+      isArray: {
+        errorMessage: 'Tiện ích nội thất phải là một mảng đối tượng gồm tên, số lượng'
       }
     }
   })

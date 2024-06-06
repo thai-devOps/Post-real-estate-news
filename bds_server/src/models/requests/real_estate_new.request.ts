@@ -1,5 +1,6 @@
 import { DIRECTION, POST_TYPE, BUYING_STATUS, POST_STATUS, UNIT } from '~/enums/util.enum'
 import { AddressTypes, ImageTypes, VideoType } from '~/type'
+import { FURNITURE_DETAILS_REQUEST_BODY } from './furniture_details.request'
 export type REAL_ESTATE_NEW_REQUEST_BODY = {
   title: string
   description: string
@@ -60,6 +61,7 @@ export type REAL_ESTATE_NEW_REQUEST_BODY = {
   external_amenities: string[]
   // Ngày đăng tin
   published_at?: Date
+  furniture_details: FURNITURE_DETAILS_REQUEST_BODY[]
   // Ngày hết hạn
   created_at?: Date
   updated_at?: Date

@@ -1,6 +1,7 @@
 import { ObjectId } from 'mongodb'
-import { BUYING_STATUS, DIRECTION, POST_STATUS, POST_TYPE, UNIT } from '~/enums/util.enum'
+import { BUYING_STATUS, DIRECTION, FURNITURE_STATUS, POST_STATUS, POST_TYPE, UNIT } from '~/enums/util.enum'
 import { AddressTypes, ImageTypes, VideoType } from '~/type'
+import { FURNITURE_DETAILS_REQUEST_BODY } from '../requests/furniture_details.request'
 
 interface RealEstateNew {
   _id?: ObjectId
@@ -66,6 +67,7 @@ interface RealEstateNew {
   external_amenities: string[]
   // Ngày đăng tin
   published_at?: Date
+  furniture_details?: FURNITURE_DETAILS_REQUEST_BODY[]
   // Ngày hết hạn
   expired_at?: Date
   updated_at?: Date
@@ -135,6 +137,7 @@ export class REAL_ESTATE_NEW_SCHEMA {
   external_amenities: string[]
   // Ngày đăng tin
   published_at: Date
+  furniture_details: FURNITURE_DETAILS_REQUEST_BODY[]
   // Ngày hết hạn
   expired_at: Date
   updated_at: Date
@@ -145,6 +148,7 @@ export class REAL_ESTATE_NEW_SCHEMA {
     this.description = data.description
     this.address = data.address
     this.price = data.price
+    this.furniture_details = data.furniture_details || []
     this.area = data.area
     this.frontage = data.frontage || 0
     this.entrance = data.entrance || 0

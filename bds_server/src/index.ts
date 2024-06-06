@@ -22,6 +22,7 @@ import vipPackagesRoutes from './routes/vip_packages.routes'
 import paymentsRoutes from './routes/payments.routes'
 import paypalService from './paypal_api'
 import videoRoutes from './routes/video.routes'
+import vipUserDetailsRoutes from './routes/vip_user_details.routes'
 const app = express()
 app.use(
   cors({
@@ -95,6 +96,7 @@ app.use('/projects', projectRoutes)
 app.use('/news', newsRoutes)
 app.use('/vip-packages', vipPackagesRoutes)
 app.use('/payments', paymentsRoutes)
+app.use('/user-vips', vipUserDetailsRoutes)
 // error handler
 app.use(defaultErrorHandler)
 

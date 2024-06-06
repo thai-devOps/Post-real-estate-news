@@ -32,6 +32,56 @@ class VipUserDetailsService {
       { returnDocument: 'after' }
     )
   }
+  public async getUserVip() {
+    // tìm tất cả user có current_active = true , và join với bảng user để lấy thông tin user,
+    // join với bảng package để lấy thông tin package
+    // sắp xếp theo ngày hết hạn giảm dần
+    //trả về thông tin user, thông tin package, ngày hết hạn, ngày bắt đầu, trạng thái, 
+    return await databaseService.vip_user_details
+      .aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user_id',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $lookup: {
+            from: 'vip_packages',
+            localField: 'package_id',
+            foreignField: '_id',
+            as: 'package'
+          }
+        },
+        {
+          $match: {
+            current_active: true
+          }
+        },
+        {
+          $sort: {
+            end_date: -1
+          }
+        },
+        // trả về object mới
+        {
+          $project: {
+            user: {
+              $arrayElemAt: ['$user', 0]
+            },
+            package: {
+              $arrayElemAt: ['$package', 0]
+            },
+            start_time: 1,
+            end_time: 1,
+            current_active: 1
+          }
+        }
+      ])
+      .toArray()
+  }
 }
 const vipUserDetailsService = new VipUserDetailsService()
 export default vipUserDetailsService
