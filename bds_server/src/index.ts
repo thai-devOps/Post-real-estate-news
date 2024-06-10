@@ -27,7 +27,7 @@ import { POST_STATUS } from './enums/util.enum'
 const app = express()
 app.use(
   cors({
-    origin: env_config.CLIENT_PORTS
+    origin: [env_config.CLIENT_PORTS as string, 'http://127.0.0.1:5500']
   })
 )
 app.use(morgan('dev'))

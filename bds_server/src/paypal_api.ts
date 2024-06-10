@@ -1,5 +1,6 @@
 import env_config from './configs/env.config'
 import fetch, { type Response } from 'node-fetch'
+import { handleConvertVNDToUSD } from './utils/handleConvertCurrency'
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET } = env_config
 
 const base = 'https://api-m.sandbox.paypal.com'
@@ -49,7 +50,7 @@ const createOrder = async (item: { id: string; name: string; price: number }) =>
       {
         amount: {
           currency_code: 'USD',
-          value: item.price
+          value: handleConvertVNDToUSD(item.price).toString()
         }
       }
     ]
