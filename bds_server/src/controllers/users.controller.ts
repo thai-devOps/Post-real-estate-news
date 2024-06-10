@@ -46,11 +46,71 @@ const getLockPosts = async (req: Request<ParamsDictionary, any, any, any>, res: 
     data: result
   })
 }
+const requestLockAccount = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const result = await userService.requestLockAccount(user_id)
+  return responseSuccess(res, {
+    message: 'Yêu cầu khóa tài khoản thành công',
+    data: result
+  })
+}
+const requestUnlockAccount = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const result = await userService.requestUnlockAccount(user_id)
+  return responseSuccess(res, {
+    message: 'Yêu cầu mở khóa tài khoản thành công',
+    data: result
+  })
+}
+const lockAccount = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+  const { user_id } = req.body
+  if (!user_id)
+    return responseSuccess(res, {
+      message: 'Không tìm thấy user_id',
+      data: null
+    })
+  const user = await userService.getUserById(user_id)
+  if (!user) {
+    return responseSuccess(res, {
+      message: 'Không tìm thấy người dùng',
+      data: null
+    })
+  }
+  const result = await userService.lockAccount(user_id)
+  return responseSuccess(res, {
+    message: 'Khóa tài khoản thành công',
+    data: result
+  })
+}
+const unlockAccount = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+  const { user_id } = req.body
+  if (!user_id)
+    return responseSuccess(res, {
+      message: 'Không tìm thấy user_id',
+      data: null
+    })
+  const user = await userService.getUserById(user_id)
+  if (!user) {
+    return responseSuccess(res, {
+      message: 'Không tìm thấy người dùng',
+      data: null
+    })
+  }
+  const result = await userService.unlockAccount(user_id)
+  return responseSuccess(res, {
+    message: 'Mở khóa tài khoản thành công',
+    data: result
+  })
+}
 const usersControllers = {
   getProfile,
   updateProfile,
   lockPost,
   unlockPost,
-  getLockPosts
+  getLockPosts,
+  requestLockAccount,
+  requestUnlockAccount,
+  lockAccount,
+  unlockAccount
 }
 export default usersControllers

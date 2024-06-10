@@ -9,12 +9,6 @@ const createFavoriteValidator = validateSchema(
       notEmpty: {
         errorMessage: messages.errors.favorites.post_id
       }
-    },
-    user_id: {
-      in: ['body'],
-      notEmpty: {
-        errorMessage: messages.errors.favorites.user_id
-      }
     }
   })
 )

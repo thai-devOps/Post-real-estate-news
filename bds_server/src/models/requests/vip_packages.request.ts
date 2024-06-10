@@ -1,17 +1,33 @@
-import { DISCOUNT_TYPE } from '~/enums/util.enum'
+import { DISCOUNT_TYPE, UNIT_PRICE, VIP_PACKAGE_DURATION, VIP_PACKAGE_STATUS } from '~/enums/util.enum'
 
 export interface VIP_PACKAGE_REQUEST_BODY {
-  name: string
+  packageName: string
   price: number
-  duration: number // in days
+  vip_score: number
+  currency: UNIT_PRICE
   description: string
-  postingLimit: number
-  discount: {
-    type: DISCOUNT_TYPE
-    value: number
-    status: boolean
+  features: string[]
+  discount?: {
+    discountPercentage: number
+    discountAmount: number
+    conditions: string
+    startDate: string
+    endDate: string
   }
-  topTrending: boolean
-  commentRight: boolean
-  newsExistTime: number
+  duration: VIP_PACKAGE_DURATION
+  specialBenefits: string[]
+  priviLeges: {
+    postingLimit: {
+      totalPost: number | string
+      durationPerPost: number
+    }
+    commentPrivileges: {
+      canComment: boolean
+      commentLimit: number | string
+    }
+    trendingPrivileges: {
+      canTrend: boolean
+      trendingLimit: number | string
+    }
+  }
 }

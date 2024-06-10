@@ -29,6 +29,33 @@ const createPaymentValidator = validateSchema(
       isBoolean: {
         errorMessage: 'Trạng thái thanh toán phải là boolean'
       }
+    },
+    amount: {
+      in: ['body'],
+      notEmpty: {
+        errorMessage: 'Số tiền không được để trống'
+      },
+      isNumeric: {
+        errorMessage: 'Số tiền phải là số'
+      }
+    },
+    payment_date: {
+      in: ['body'],
+      notEmpty: {
+        errorMessage: 'Ngày thanh toán không được để trống'
+      },
+      isString: {
+        errorMessage: 'Ngày thanh toán phải là chuỗi'
+      }
+    },
+    currency: {
+      in: ['body'],
+      notEmpty: {
+        errorMessage: 'Loại tiền không được để trống'
+      },
+      isString: {
+        errorMessage: 'Loại tiền phải là chuỗi'
+      }
     }
   })
 )

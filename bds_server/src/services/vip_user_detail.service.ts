@@ -36,7 +36,7 @@ class VipUserDetailsService {
     // tìm tất cả user có current_active = true , và join với bảng user để lấy thông tin user,
     // join với bảng package để lấy thông tin package
     // sắp xếp theo ngày hết hạn giảm dần
-    //trả về thông tin user, thông tin package, ngày hết hạn, ngày bắt đầu, trạng thái, 
+    //trả về thông tin user, thông tin package, ngày hết hạn, ngày bắt đầu, trạng thái,
     return await databaseService.vip_user_details
       .aggregate([
         {
@@ -81,6 +81,22 @@ class VipUserDetailsService {
         }
       ])
       .toArray()
+  }
+  public async getVipUserByUserId(userId: string) {
+    return await databaseService.vip_user_details.findOne({ user_id: new ObjectId(userId), current_active: true })
+  }
+  public async updateVipUserDetail(id: string, payload: VIP_USER_DETAIL_REQUEST_BODY) {
+    return await databaseService.vip_user_details.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          ...payload,
+          user_id: new ObjectId(payload.user_id),
+          package_id: new ObjectId(payload.package_id)
+        }
+      },
+      { returnDocument: 'after' }
+    )
   }
 }
 const vipUserDetailsService = new VipUserDetailsService()

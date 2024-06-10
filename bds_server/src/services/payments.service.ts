@@ -9,6 +9,7 @@ class PaymentService {
     return await databaseService.payments.insertOne(
       new PAYMENT_SCHEMA({
         ...payload,
+        payment_date: new Date(payload.payment_date),
         user_id: new ObjectId(user_id),
         package_id: new ObjectId(payload.package_id)
       })
@@ -27,6 +28,7 @@ class PaymentService {
         $set: {
           ...payload,
           user_id: new ObjectId(user_id),
+          payment_date: new Date(payload.payment_date),
           package_id: new ObjectId(payload.package_id)
         }
       },

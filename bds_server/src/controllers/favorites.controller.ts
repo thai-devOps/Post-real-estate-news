@@ -2,41 +2,56 @@ import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { FAVORITE_REQUEST_BODY } from '~/models/requests/favorites.schema'
 import favoritesService from '~/services/favorites.service'
+import realEstateNewsService from '~/services/real_estate_news.service'
+import { TokenPayload } from '~/type'
 import { responseSuccess } from '~/utils/response'
 const createFavorite = async (req: Request<ParamsDictionary, any, FAVORITE_REQUEST_BODY, any>, res: Response) => {
-  const payload = req.body
-  const result = await favoritesService.createFavorite(payload)
+  const { post_id } = req.body
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const result = await favoritesService.createFavorite({ post_id, user_id })
+  const post = await realEstateNewsService.getById(post_id)
+  if (!post) {
+    return responseSuccess(res, {
+      message: 'Không tìm thấy tin đăng',
+      data: null
+    })
+  }
+  await realEstateNewsService.updateScore(post_id, post.score + 1)
   return responseSuccess(res, {
     message: 'Favorite created successfully',
     data: result
   })
 }
 const unFavorite = async (req: Request<ParamsDictionary, any, FAVORITE_REQUEST_BODY, any>, res: Response) => {
-  const payload = req.body
-  const result = await favoritesService.deleteFavoriteByPostIdAndUserId(payload)
+  const { post_id } = req.body
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const result = await favoritesService.deleteFavoriteByPostIdAndUserId({ post_id, user_id })
   if (!result) {
     return responseSuccess(res, {
-      message: 'Favorite not found',
+      message: 'Không tìm thấy yêu thích để xóa',
       data: result
     })
   }
   return responseSuccess(res, {
-    message: 'Favorite deleted successfully',
+    message: 'Bỏ yêu thích thành công',
     data: result
   })
 }
 
 const getFavoritesByUserIdAndPostId = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
-  const { user_id, post_id } = req.query
+  const { post_id } = req.query
+  const { user_id } = req.decoded_access_token as TokenPayload
   if (!user_id || !post_id) {
     return responseSuccess(res, {
-      message: 'Required fields are missing',
+      message: 'Thiếu thông tin user_id hoặc post_id',
       data: []
     })
   }
+  console.log(user_id, post_id)
   const result = await favoritesService.getFavoritesByUserIdAndPostId(user_id as string, post_id as string)
+  console.log(result)
   return responseSuccess(res, {
-    message: 'Favorites retrieved successfully',
+    message: 'Truy xuất lượt thích thành công',
     data: result
   })
 }

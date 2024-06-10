@@ -21,6 +21,18 @@ export type REAL_ESTATE_NEW_REQUEST_BODY = {
     value: number
     unit: UNIT
   }
+  is_priority?: boolean
+  // Thoong tin vip
+  // Đánh dấu tin xu hướng
+  is_trend?: boolean
+  vip?: {
+    is_vip: boolean
+    vip_name: string
+    is_top: boolean
+    vip_score: number
+    trendPosition: number
+    is_featured: boolean
+  }
   // Thông tin mặt tiền
   frontage?: number // Mặt tiền (m)
   // Thông tin đường vào
@@ -33,6 +45,7 @@ export type REAL_ESTATE_NEW_REQUEST_BODY = {
     contact_phone: string
     contact_email: string
   }
+  score: number
   type: POST_TYPE // Loại tin đăng ví dụ: "sell" | "rent"
   // thông tin hình ảnh
   images: ImageTypes[]
@@ -47,7 +60,8 @@ export type REAL_ESTATE_NEW_REQUEST_BODY = {
   property_type_id: string
   view: number
   // thời gian tồn tại tin
-  time_existed?: number //ví dụ: 30 ngày
+  time_existed: number //ví dụ: 30 ngày
+
   // tiện ích nội ngoại khu
   number_of_bedrooms: number // Số phòng ngủ
   number_of_toilets: number // Số phòng vệ sinh

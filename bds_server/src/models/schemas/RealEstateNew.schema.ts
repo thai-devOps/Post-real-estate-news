@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import { BUYING_STATUS, DIRECTION, FURNITURE_STATUS, POST_STATUS, POST_TYPE, UNIT } from '~/enums/util.enum'
+import { BUYING_STATUS, DIRECTION, POST_STATUS, POST_TYPE, UNIT } from '~/enums/util.enum'
 import { AddressTypes, ImageTypes, VideoType } from '~/type'
 import { FURNITURE_DETAILS_REQUEST_BODY } from '../requests/furniture_details.request'
 
@@ -53,7 +53,7 @@ interface RealEstateNew {
   property_type_id: ObjectId
   view?: number
   // thời gian tồn tại tin
-  time_existed?: number //ví dụ: 30 ngày
+  time_existed: number //ví dụ: 30 ngày
   // tiện ích nội ngoại khu
   number_of_bedrooms: number // Số phòng ngủ
   number_of_toilets: number // Số phòng vệ sinh
@@ -67,6 +67,16 @@ interface RealEstateNew {
   external_amenities: string[]
   // Ngày đăng tin
   published_at?: Date
+  score?: number
+  is_priority?: boolean
+  vip?: {
+    is_vip: boolean
+    vip_name: string
+    vip_score: number
+    is_featured: boolean // tin nổi bật
+    is_top: boolean // tin xu hướng
+    trendPosition: number
+  }
   furniture_details?: FURNITURE_DETAILS_REQUEST_BODY[]
   // Ngày hết hạn
   expired_at?: Date
@@ -93,6 +103,16 @@ export class REAL_ESTATE_NEW_SCHEMA {
   area: {
     value: number
     unit: UNIT
+  }
+  score: number
+  is_priority: boolean
+  vip: {
+    is_vip: boolean
+    vip_name: string
+    vip_score: number
+    is_featured: boolean // tin nổi bật
+    is_top: boolean // tin xu hướng
+    trendPosition: number
   }
   // Thông tin mặt tiền
   frontage: number // Mặt tiền (m)
@@ -145,11 +165,20 @@ export class REAL_ESTATE_NEW_SCHEMA {
     const date = new Date()
     this._id = data._id || new ObjectId()
     this.title = data.title
+    this.is_priority = data.is_priority || false
     this.description = data.description
     this.address = data.address
     this.price = data.price
     this.furniture_details = data.furniture_details || []
     this.area = data.area
+    this.vip = data.vip || {
+      is_vip: false,
+      is_featured: false,
+      is_top: false,
+      vip_score: 0,
+      vip_name: '',
+      trendPosition: 0
+    }
     this.frontage = data.frontage || 0
     this.entrance = data.entrance || 0
     this.direction = data.direction
@@ -168,11 +197,12 @@ export class REAL_ESTATE_NEW_SCHEMA {
     this.number_of_toilets = data.number_of_toilets
     this.number_of_floors = data.number_of_floors
     this.legal_info = data.legal_info
+    this.score = data.score || 0
     this.furniture = data.furniture
     this.internal_amenities = data.internal_amenities
     this.external_amenities = data.external_amenities
     this.published_at = data.published_at || date
-    this.expired_at = data.expired_at || new Date(date.setDate(date.getDate() + (data.time_existed || 7)))
+    this.expired_at = data.expired_at || new Date(date.setDate(date.getDate() + data.time_existed))
     this.updated_at = data.updated_at || new Date()
   }
 }

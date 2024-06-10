@@ -23,6 +23,7 @@ import paymentsRoutes from './routes/payments.routes'
 import paypalService from './paypal_api'
 import videoRoutes from './routes/video.routes'
 import vipUserDetailsRoutes from './routes/vip_user_details.routes'
+import { POST_STATUS } from './enums/util.enum'
 const app = express()
 app.use(
   cors({
@@ -61,6 +62,54 @@ cron.schedule('0 0 * * *', async () => {
     console.log(error)
   }
 })
+// Update trending posts every 5 minutes
+cron.schedule('*/1 * * * *', async () => {
+  try {
+    const topTrending = await realEstateNewsService.getTopNews({})
+    if (!topTrending) {
+      return
+    }
+    // tìm tất cả tin đăng có vip.is_top = true  và ! topTrending._id
+    const topNews = await databaseService.real_estate_news
+      .find({
+        'vip.is_top': true,
+        status: POST_STATUS.CONFIRMED,
+        is_priority: false
+      })
+      .sort({ 'vip.trendPosition': 1 })
+      .toArray()
+    if (topNews.length === 0) {
+      return
+    }
+    for (let i = 0; i < topNews.length; i++) {
+      await databaseService.real_estate_news.findOneAndUpdate(
+        {
+          _id: topNews[i]._id
+        },
+        {
+          $set: {
+            is_priority: i === 0 ? true : false,
+            'vip.trendPosition': i
+          }
+        }
+      )
+    }
+    await databaseService.real_estate_news.findOneAndUpdate(
+      {
+        _id: topTrending._id
+      },
+      {
+        $set: {
+          is_priority: false,
+          'vip.trendPosition': topNews.length
+        }
+      }
+    )
+    console.log('Cập nhật tin đăng xu hướng...')
+  } catch {
+    console.log('Failed to update trending posts')
+  }
+})
 
 // Routes
 app.post('/api/orders', async (req, res) => {
@@ -97,9 +146,8 @@ app.use('/news', newsRoutes)
 app.use('/vip-packages', vipPackagesRoutes)
 app.use('/payments', paymentsRoutes)
 app.use('/user-vips', vipUserDetailsRoutes)
-// error handler
-app.use(defaultErrorHandler)
 
-app.listen(env_config.SERVER_PORT, () => {
+app.use(defaultErrorHandler)
+app.listen(env_config.SERVER_PORT, async () => {
   console.log('Server is running on port 5010')
 })

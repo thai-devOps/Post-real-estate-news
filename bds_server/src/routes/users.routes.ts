@@ -155,4 +155,52 @@ userRoutes.delete(
  * description: get lock posts
  */
 userRoutes.get('/lock-posts', commonMiddlewares.accessTokenValidator, wrapRequestHandler(usersControllers.getLockPosts))
+/**
+ * description: request lock account
+ * methods: POST
+ * body: {reason: string}
+ * headers: {Authorization: {description: Bearer access_token}}
+ * path: /lock-account
+ */
+userRoutes.put(
+  '/request-lock-account',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(usersControllers.requestLockAccount)
+)
+/**
+ * description: request unlock account
+ * methods: POST
+ * headers: {Authorization: {description: Bearer access_token}}
+ */
+userRoutes.put(
+  '/request-unlock-account',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(usersControllers.requestUnlockAccount)
+)
+/**
+ * description: lock account
+ * methods: POST
+ * headers: {Authorization: {description: Bearer access_token}}
+ * path: /lock-account
+ * middlewares: isAdmin
+ */
+userRoutes.put(
+  '/lock-account',
+  commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isAdmin,
+  wrapRequestHandler(usersControllers.lockAccount)
+)
+/**
+ * description: unlock account
+ * methods: POST
+ * headers: {Authorization: {description: Bearer access_token}}
+ * path: /unlock-account
+ * middlewares: isAdmin
+ */
+userRoutes.put(
+  '/unlock-account',
+  commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isAdmin,
+  wrapRequestHandler(usersControllers.unlockAccount)
+)
 export default userRoutes

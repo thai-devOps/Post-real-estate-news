@@ -289,7 +289,7 @@ const createValidator = validateSchema(
     },
     videos: {
       in: ['body'],
-      optional: true,
+      optional: true
       // notEmpty: {
       //   errorMessage: 'Video không được để trống'
       // }

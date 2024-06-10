@@ -140,52 +140,156 @@ export const sendEmailSignVipSuccess = async ({
   subject: string
 }) => {
   try {
+    //     const htmlContent = `<!DOCTYPE html>
+    // <html lang="en">
+    // <head>
+    //     <meta charset="UTF-8">
+    //     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    //     <title>Đăng Ký VIP Thành Công</title>
+    //     <style>
+    //         body {
+    //             font-family: 'Arial', sans-serif;
+    //             background-color: #f4f4f4;
+    //             margin: 0;
+    //             display: flex;
+    //             justify-content: center;
+    //             align-items: center;
+    //             height: 100vh;
+    //         }
+
+    //         .container {
+    //             background-color: white;
+    //             padding: 30px;
+    //             border-radius: 10px;
+    //             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    //             max-width: 600px;
+    //             text-align: center;
+    //         }
+
+    //         h1 {
+    //             color: #4CAF50;
+    //             font-size: 24px;
+    //             margin-bottom: 20px;
+    //         }
+
+    //         p {
+    //             font-size: 18px;
+    //             margin-bottom: 20px;
+    //         }
+
+    //         table {
+    //             width: 100%;
+    //             border-collapse: collapse;
+    //             margin-bottom: 20px;
+    //         }
+
+    //         th, td {
+    //             padding: 12px;
+    //             border: 1px solid #ddd;
+    //             text-align: left;
+    //         }
+
+    //         th {
+    //             background-color: #f2f2f2;
+    //         }
+
+    //         .button {
+    //             display: inline-block;
+    //             padding: 10px 20px;
+    //             background-color: #4CAF50;
+    //             color: white;
+    //             text-decoration: none;
+    //             border-radius: 5px;
+    //             font-size: 16px;
+    //         }
+
+    //         .button:hover {
+    //             background-color: #45a049;
+    //         }
+    //     </style>
+    // </head>
+    // <body>
+    //     <div class="container">
+    //         <h1>Đăng Ký VIP Thành Công!</h1>
+    //         <p>Cảm ơn bạn đã đăng ký gói VIP của chúng tôi.</p>
+    //         <table>
+    //             <tr>
+    //                 <th>Thông tin tài khoản</th>
+    //                 <td></td>
+    //             </tr>
+    //             <tr>
+    //                 <td><strong>Tên:</strong></td>
+    //                 <td>${user.full_name}</td>
+    //             </tr>
+    //             <tr>
+    //                 <td><strong>Email:</strong></td>
+    //                 <td>${user.email}</td>
+    //             </tr>
+    //             <tr>
+    //                 <th>Chi tiết gói VIP</th>
+    //                 <td></td>
+    //             </tr>
+    //             <tr>
+    //                 <td><strong>Giá gói VIP:</strong></td>
+    //                 <td>${formatCurrency(vip_package.price)}</td>
+    //             </tr>
+    //             <tr>
+    //                 <td><strong>Giảm giá:</strong></td>
+    //                 <td>${vip_package.discount.discountPercentage + '%'}</td>
+    //             </tr>
+    //             <tr>
+    //                 <td><strong>Thành tiền:</strong></td>
+    //                 <td>${formatCurrency(handlePriceDiscount(vip_package.price, vip_package.discount))}</td>
+    //             </tr>
+    //             <tr>
+    //                 <td><strong>Kỳ thanh toán tiếp theo:</strong></td>
+    //                 <td>${new Date(vip_detail.end_date).toLocaleDateString('vi-VN')}</td>
+    //             </tr>
+    //             <tr>
+    //                 <td><strong>Phương thức thanh toán:</strong></td>
+    //                 <td>${capitalize(payment.payment_method)}</td>
+    //             </tr>
+    //         </table>
+    //         <a href="${env_config.CLIENT_PORTS}" class="button">Quay về trang chủ</a>
+    //     </div>
+    // </body>
+    // </html>
+
+    // `
     const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Ký VIP Thành Công</title>
+    <title>Đăng ký VIP Thành công</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            padding: 0;
         }
 
         .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            text-align: center;
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
 
         h1 {
-            color: #4CAF50;
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        p {
-            font-size: 18px;
-            margin-bottom: 20px;
+            text-align: center;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
 
         th, td {
-            padding: 12px;
             border: 1px solid #ddd;
+            padding: 8px;
             text-align: left;
         }
 
@@ -193,74 +297,69 @@ export const sendEmailSignVipSuccess = async ({
             background-color: #f2f2f2;
         }
 
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .button:hover {
-            background-color: #45a049;
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #888;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Đăng Ký VIP Thành Công!</h1>
-        <p>Cảm ơn bạn đã đăng ký gói VIP của chúng tôi.</p>
-        <table>
-            <tr>
-                <th>Thông tin tài khoản</th>
-                <td></td>
-            </tr>
-            <tr>
-                <td><strong>Tên:</strong></td>
-                <td>${user.full_name}</td>
-            </tr>
-            <tr>
-                <td><strong>Email:</strong></td>
-                <td>${user.email}</td>
-            </tr>
-            <tr>
-                <th>Chi tiết gói VIP</th>
-                <td></td>
-            </tr>
-            <tr>
-                <td><strong>Giá gói VIP:</strong></td>
-                <td>${formatCurrency(vip_package.price)}</td>
-            </tr>
-            <tr>
-                <td><strong>Giảm giá:</strong></td>
-                <td>${
-                  vip_package.discount.status
-                    ? vip_package.discount.type === DISCOUNT_TYPE.MONEY
-                      ? formatCurrency(vip_package.discount.value)
-                      : `${vip_package.discount.value}%`
-                    : ''
-                }</td>
-            </tr>
-            <tr>
-                <td><strong>Thành tiền:</strong></td>
-                <td>${formatCurrency(handlePriceDiscount(vip_package.price, vip_package.discount))}</td>
-            </tr>
-            <tr>
-                <td><strong>Kỳ thanh toán tiếp theo:</strong></td>
-                <td>${new Date(vip_detail.end_time).toLocaleDateString('vi-VN')}</td>
-            </tr>
-            <tr>
-                <td><strong>Phương thức thanh toán:</strong></td>
-                <td>${capitalize(payment.payment_method)}</td>
-            </tr>
-        </table>
-        <a href="${env_config.CLIENT_PORTS}" class="button">Quay về trang chủ</a>
+        <h1>Đăng ký VIP Thành công</h1>
+        
+        <div class="account-info">
+            <h2>Thông tin tài khoản</h2>
+            <table>
+                <tr>
+                    <th>Họ và Tên</th>
+                    <td>${user.full_name}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>${user.email}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="package-info">
+            <h2>Chi tiết gói VIP</h2>
+            <table>
+                <tr>
+                    <th>Tên gói</th>
+                    <td>${vip_package.packageName}</td>
+                </tr>
+                <tr>
+                    <th>Giá</th>
+                    <td>${formatCurrency(vip_package.price)}</td>
+                </tr>
+                <tr>
+                    <th>Giảm giá</th>
+                    <td>${vip_package.discount.discountPercentage + '%'}</td>
+                </tr>
+                <tr>
+                    <th>Thành tiền</th>
+                    <td>${formatCurrency(handlePriceDiscount(vip_package.price, vip_package.discount))}</td>
+                </tr>
+                <tr>
+                    <th>Kỳ thanh toán tiếp theo</th>
+                    <td>${new Date(vip_detail.end_date).toLocaleDateString('vi-VN')}</td>
+                </tr>
+                <tr>
+                    <th>Phương thức thanh toán</th>
+                    <td>${capitalize(payment.payment_method)}</td>
+                </tr>
+            </table>
+        </div>
+
+        <a href="${env_config.CLIENT_PORTS}">Quay về trang chủ</a>
+    </div>
+
+    <div class="footer">
+        <p>Đất Xanh Miền Tây - 139C Trần Hưng Đạo, Quận Ninh Kiều, Tp.Cần Thơ</p>
     </div>
 </body>
 </html>
-
 `
     const transporter = nodemailer.createTransport({
       host: env_config.EMAIL_HOST,

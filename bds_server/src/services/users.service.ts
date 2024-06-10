@@ -197,6 +197,34 @@ class UserService {
     const { locked_posts } = user
     return await databaseService.real_estate_news.find({ _id: { $in: locked_posts } }).toArray()
   }
+  public async requestLockAccount(user_id: string) {
+    return databaseService.users.findOneAndUpdate(
+      { _id: new ObjectId(user_id) },
+      { $set: { verify: USER_VERIFY_STATUS.REQUEST_LOCK, updated_at: new Date() } },
+      { returnDocument: 'after' }
+    )
+  }
+  public async requestUnlockAccount(user_id: string) {
+    return databaseService.users.findOneAndUpdate(
+      { _id: new ObjectId(user_id) },
+      { $set: { verify: USER_VERIFY_STATUS.REQUEST_UNLOCK, updated_at: new Date() } },
+      { returnDocument: 'after' }
+    )
+  }
+  public async lockAccount(user_id: string) {
+    return databaseService.users.findOneAndUpdate(
+      { _id: new ObjectId(user_id) },
+      { $set: { verify: USER_VERIFY_STATUS.BLOCKED, updated_at: new Date() } },
+      { returnDocument: 'after' }
+    )
+  }
+  public async unlockAccount(user_id: string) {
+    return databaseService.users.findOneAndUpdate(
+      { _id: new ObjectId(user_id) },
+      { $set: { verify: USER_VERIFY_STATUS.VERIFIED, updated_at: new Date() } },
+      { returnDocument: 'after' }
+    )
+  }
 }
 
 const userService = new UserService()

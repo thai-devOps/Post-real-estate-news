@@ -1,7 +1,7 @@
 import { REAL_ESTATE_NEW_REQUEST_BODY } from '~/models/requests/real_estate_new.request'
 import databaseService from './database.service'
 import { REAL_ESTATE_NEW_SCHEMA } from '~/models/schemas/RealEstateNew.schema'
-import { ObjectId } from 'mongodb'
+import { ObjectId, WithId } from 'mongodb'
 import { POST_STATUS } from '~/enums/util.enum'
 
 class RealEstateNewsService {
@@ -114,6 +114,59 @@ class RealEstateNewsService {
         }
       }
     )
+  }
+  public async countVipPosts() {
+    return await databaseService.real_estate_news.countDocuments({ 'vip.is_vip': true })
+  }
+  public async updateTrendingPosts() {
+    console.log('update trending posts')
+  }
+  public async updateScore(id: string, score: number) {
+    return await databaseService.real_estate_news.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          score,
+          updated_at: new Date()
+        }
+      }
+    )
+  }
+  // public async getTrendPost() {
+  //   return await databaseService.real_estate_news.findOne({
+  //     is_priority: true,
+  //     status: POST_STATUS.CONFIRMED,
+  //     'vip.trendPostion': 0
+  //   })
+  // }
+  public async getPostTrending() {
+    return await databaseService.real_estate_news
+      .find({
+        'vip.is_top': true,
+        status: POST_STATUS.CONFIRMED,
+        is_priority: false
+      })
+      .toArray()
+  }
+  public async updateUntrendOldTrendPost(post: REAL_ESTATE_NEW_SCHEMA) {
+    const posts = await this.getPostTrending()
+    return await databaseService.real_estate_news.findOneAndUpdate(
+      { _id: post._id },
+      {
+        $set: {
+          vip: { ...post.vip, trendPosition: posts.length },
+          is_priority: false
+        }
+      }
+    )
+  }
+  public async getTopNews(condition: any) {
+    return await databaseService.real_estate_news.findOne({
+      ...condition,
+      is_priority: true,
+      status: POST_STATUS.CONFIRMED,
+      'vip.is_top': true
+    })
   }
 }
 const realEstateNewsService = new RealEstateNewsService()

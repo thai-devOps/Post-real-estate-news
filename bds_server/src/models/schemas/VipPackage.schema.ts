@@ -1,56 +1,95 @@
 import { ObjectId } from 'mongodb'
-import { DISCOUNT_TYPE } from '~/enums/util.enum'
+import { UNIT_PRICE, VIP_PACKAGE_DURATION, VIP_PACKAGE_STATUS } from '~/enums/util.enum'
 
 interface VipPackageType {
   _id?: ObjectId
-  name: string
+  packageName: string
   price: number
-  duration: number // in days
+  currency: UNIT_PRICE
+  vip_score: number
   description: string
-  status?: 'active' | 'inactive'
-  postingLimit: number
+  features: string[]
   discount?: {
-    type: DISCOUNT_TYPE
-    value: number
-    status: boolean
+    discountPercentage: number
+    discountAmount: number
+    conditions: string
+    startDate: Date | null
+    endDate: Date | null
   }
-  topTrending: boolean
-  commentRight: boolean
-  newsExistTime: number
+  duration: VIP_PACKAGE_DURATION
+  specialBenefits: string[]
+  status?: VIP_PACKAGE_STATUS
+  priviLeges: {
+    postingLimit: {
+      totalPost: number | string
+      durationPerPost: number
+    }
+    commentPrivileges: {
+      canComment: boolean
+      commentLimit: number | string
+    }
+    trendingPrivileges: {
+      canTrend: boolean
+      trendingLimit: number | string
+    }
+  }
   created_at?: Date
   updated_at?: Date
 }
 export class VIP_PACKAGE_SCHEMA {
-  _id: ObjectId
-  name: string
+  _id?: ObjectId
+  packageName: string
   price: number
-  duration: number
+  currency: UNIT_PRICE
+  vip_score: number
   description: string
-  status: 'active' | 'inactive'
-  postingLimit: number
+  features: string[]
   discount: {
-    type: DISCOUNT_TYPE
-    value: number
-    status: boolean
+    discountPercentage: number
+    discountAmount: number
+    conditions: string
+    startDate: Date | null
+    endDate: Date | null
   }
-  topTrending: boolean
-  commentRight: boolean
-  newsExistTime: number
-  created_at: Date
-  updated_at: Date
+  duration: VIP_PACKAGE_DURATION
+  specialBenefits: string[]
+  status: VIP_PACKAGE_STATUS
+  priviLeges: {
+    postingLimit: {
+      totalPost: number | string
+      durationPerPost: number
+    }
+    commentPrivileges: {
+      canComment: boolean
+      commentLimit: number | string
+    }
+    trendingPrivileges: {
+      canTrend: boolean
+      trendingLimit: number | string
+    }
+  }
+  created_at?: Date
+  updated_at?: Date
   constructor(data: VipPackageType) {
     const date = new Date()
     this._id = data._id || new ObjectId()
-    this.name = data.name
+    this.packageName = data.packageName
     this.price = data.price
-    this.duration = data.duration
+    this.currency = data.currency
     this.description = data.description
-    this.status = data.status || 'active'
-    this.postingLimit = data.postingLimit
-    this.discount = data.discount || { type: DISCOUNT_TYPE.PERCENT, value: 0, status: false }
-    this.topTrending = data.topTrending
-    this.commentRight = data.commentRight
-    this.newsExistTime = data.newsExistTime
+    this.features = data.features
+    this.discount = data.discount || {
+      discountPercentage: 0,
+      discountAmount: 0,
+      conditions: '',
+      startDate: null,
+      endDate: null
+    }
+    this.duration = data.duration
+    this.specialBenefits = data.specialBenefits
+    this.priviLeges = data.priviLeges
+    this.vip_score = data.vip_score
+    this.status = data.status || VIP_PACKAGE_STATUS.ACTIVE
     this.created_at = data.created_at || date
     this.updated_at = data.updated_at || date
   }

@@ -4,19 +4,24 @@ export function formatCurrency(amount: number): string {
   // Use toLocaleString to format the number with commas
   const formattedAmount = amount.toLocaleString('vi-VN')
   // Append the currency symbol
-  return `${formattedAmount} VND`
+  return `${formattedAmount} ₫ `
 }
 
 export function handlePriceDiscount(
   price: number,
-  discount: { type: DISCOUNT_TYPE; status: boolean; value: number }
-): number {
-  if (discount.status) {
-    if (discount.type === DISCOUNT_TYPE.PERCENT) {
-      return price - price * (discount.value / 100)
-    } else {
-      return price - discount.value
-    }
+  discount: {
+    discountPercentage: number
+    discountAmount: number
+    conditions: string
+    startDate: Date | null
+    endDate: Date | null
   }
-  return price
+): number {
+  const { discountPercentage, discountAmount, conditions, startDate, endDate } = discount
+  const currentDate = new Date()
+  const isDiscountValid = startDate && endDate && startDate <= currentDate && currentDate <= endDate
+  if (isDiscountValid) {
+    price = price - (price * discountPercentage) / 100
+    return price
+  } else return price
 }

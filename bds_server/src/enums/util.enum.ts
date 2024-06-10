@@ -106,6 +106,21 @@ export enum DISCOUNT_TYPE {
   MONEY = 'đ'
   //
 }
+export enum UNIT_PRICE {
+  // VND
+  VND = 'VND',
+  // USD
+  USD = 'USD'
+}
+export enum VIP_PACKAGE_STATUS {
+  // Đang hoạt động
+  ACTIVE = 'active',
+  // Không hoạt động
+  INACTIVE = 'inactive',
+  // Đang cập nhật
+  UPDATING = 'updating'
+  // Đã hết hạn
+}
 export enum PAYMENT_METHOD {
   PAYPAL = 'paypal',
   VNPAY = 'vnpay',
@@ -123,4 +138,14 @@ export enum VIP_STATUS {
   EXPIRING = 'expiring',
   // Đã hết hạn
   EXPIRED = 'expired'
+}
+export enum VIP_PACKAGE_DURATION {
+  // 1 ngày
+  ONE_DAY = '1 day',
+  // 1 tuần
+  ONE_WEEK = '1 week',
+  // 1 tháng
+  ONE_MONTH = '1 month',
+  // 12 tháng
+  ONE_YEAR = '1 year'
 }

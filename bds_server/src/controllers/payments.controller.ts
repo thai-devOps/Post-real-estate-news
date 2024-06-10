@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import httpStatusCode from '~/constants/httpStatusCode'
-import { PAYMENT_STATUS } from '~/enums/util.enum'
+import { PAYMENT_STATUS, VIP_PACKAGE_DURATION } from '~/enums/util.enum'
 import { PAYMENT_REQUEST_BODY } from '~/models/requests/payments.request'
 import { VIP_USER_DETAIL_REQUEST_BODY } from '~/models/requests/vip_user_detail.request'
 import { PAYMENT_SCHEMA } from '~/models/schemas/Payment.schema'
@@ -49,12 +49,22 @@ const confirmPayment = async (req: Request<ParamsDictionary, any, any, any>, res
     throw new ErrorWithMessage({ message: 'Xác nhận thanh toán thất bại', status: httpStatusCode.BAD_REQUEST })
   const vip_package = (await vipPackagesService.getById(result.package_id.toString())) as VIP_PACKAGE_SCHEMA
   const user = (await userService.getUserById(result.user_id.toString())) as USER_SCHEMA
+  // handle end date from vip_package privileges
+  const endDate: Date = new Date()
+  if (vip_package.duration === VIP_PACKAGE_DURATION.ONE_DAY) {
+    endDate.setDate(endDate.getDate() + 1)
+  } else if (vip_package.duration === VIP_PACKAGE_DURATION.ONE_WEEK) {
+    endDate.setDate(endDate.getDate() + 7)
+  } else if (vip_package.duration === VIP_PACKAGE_DURATION.ONE_MONTH) {
+    endDate.setMonth(endDate.getMonth() + 1)
+  } else if (vip_package.duration === VIP_PACKAGE_DURATION.ONE_YEAR) {
+    endDate.setFullYear(endDate.getFullYear() + 1)
+  }
   const details_payload: VIP_USER_DETAIL_REQUEST_BODY = {
     user_id: result.user_id.toString(),
     package_id: result.package_id.toString(),
-    start_time: new Date(),
-    number_of_posting_used: 0,
-    end_time: new Date(new Date().setDate(new Date().getDate() + vip_package.duration))
+    start_date: new Date(),
+    end_date: endDate
   }
   const createVipDetail = await vipUserDetailsService.create(details_payload)
   const vip_user_detail = (await vipUserDetailsService.getById(
@@ -95,7 +105,7 @@ const getPaymentByUserId = async (req: Request<ParamsDictionary, any, any, any>,
     data: result
   })
 }
-const updatePayment = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+const updatePayment = async (req: Request<ParamsDictionary, any, PAYMENT_REQUEST_BODY, any>, res: Response) => {
   const id = req.params.id
   const payload = req.body
   const { user_id } = req.decoded_access_token as TokenPayload
