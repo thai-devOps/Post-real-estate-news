@@ -126,13 +126,12 @@ cron.schedule('0 0 * * *', async () => {
   }
 })
 
-
 // Routes
 app.post('/api/orders', async (req, res) => {
   try {
     // use the cart information passed from the front-end to calculate the order amount detals
-    const { cart } = req.body
-    const { jsonResponse, httpStatusCode } = await paypalService.createOrder(cart)
+    const payload = req.body as { id: string; name: string; price: number }
+    const { jsonResponse, httpStatusCode } = await paypalService.createOrder(payload)
     res.status(httpStatusCode).json(jsonResponse)
   } catch (error) {
     console.error('Failed to create order:', error)
