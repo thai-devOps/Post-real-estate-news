@@ -63,8 +63,11 @@ class CommentsService {
       }
     )
   }
-  public async deleteComment(id: string) {
-    return await databaseService.comments.deleteOne({ _id: new ObjectId(id) })
+  public async deleteComment(id: string, user_id: string) {
+    return await databaseService.comments.findOneAndDelete({
+      _id: new ObjectId(id),
+      user_id: new ObjectId(user_id)
+    })
   }
   public async deleteComments(ids: string[]) {
     return await databaseService.comments.deleteMany({

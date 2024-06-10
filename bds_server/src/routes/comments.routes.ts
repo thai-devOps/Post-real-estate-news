@@ -20,6 +20,7 @@ commentsRoutes.post(
   '/create',
   commentsMiddlewares.createCommentValidator,
   commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isVipUser,
   wrapRequestHandler(commentsControllers.createComment)
 )
 /**

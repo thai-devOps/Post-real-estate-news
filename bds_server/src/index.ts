@@ -63,7 +63,7 @@ cron.schedule('0 0 * * *', async () => {
   }
 })
 // Update trending posts every 5 minutes
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('*/5 * * * *', async () => {
   try {
     const topTrending = await realEstateNewsService.getTopNews({})
     if (!topTrending) {
@@ -110,6 +110,22 @@ cron.schedule('*/1 * * * *', async () => {
     console.log('Failed to update trending posts')
   }
 })
+// Update post status if expired every day at 00:00 AM
+cron.schedule('0 0 * * *', async () => {
+  try {
+    const posts = await realEstateNewsService.getAllNotPagination()
+    for (const post of posts) {
+      const now = new Date()
+      if (now > post.expired_at) {
+        await realEstateNewsService.updateStatus(post._id.toString(), POST_STATUS.EXPIRED)
+      }
+    }
+    console.log('Cập nhật trạng thái tin đăng')
+  } catch (error) {
+    console.log(error)
+  }
+})
+
 
 // Routes
 app.post('/api/orders', async (req, res) => {

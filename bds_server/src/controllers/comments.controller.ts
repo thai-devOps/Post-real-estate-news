@@ -2,9 +2,36 @@ import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { COMMENT_REQUEST_BODY } from '~/models/requests/comments.quest'
 import commentsService from '~/services/comments.service'
-import { responseSuccess } from '~/utils/response'
+import vipPackagesService from '~/services/vip_packages.service'
+import vipUserDetailsService from '~/services/vip_user_detail.service'
+import { TokenPayload } from '~/type'
+import { responseError, responseSuccess } from '~/utils/response'
 const createComment = async (req: Request<ParamsDictionary, any, COMMENT_REQUEST_BODY, any>, res: Response) => {
   const payload = req.body
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const vip_detail = await vipUserDetailsService.getVipUserByUserId(user_id)
+  if(!vip_detail) {
+    return responseError(res, {
+      message: 'Bạn không có quyền thêm comment',
+      code: 400 // Bad request
+    })
+  }
+  const vip_package = await vipPackagesService.getById(vip_detail.package_id.toString())
+  if (!vip_package) {
+    return responseError(res, {
+      message: 'Gói vip không tồn tại',
+      code: 400 // Bad request
+    })
+  }
+  let comments_used = vip_detail.comments_used
+  if (vip_package.priviLeges.commentPrivileges.commentLimit === 'unlimited') {
+    comments_used += 1
+  } else if (comments_used >= Number(vip_package.priviLeges.commentPrivileges.commentLimit)) {
+    return responseError(res, {
+      message: 'Bạn đã hết lượt comment',
+      code: 400 // Bad request
+    })
+  }
   const result = await commentsService.createComment(payload)
   return responseSuccess(res, {
     message: 'Tạo comment thành công',
@@ -49,7 +76,14 @@ const updateComment = async (req: Request<ParamsDictionary, any, COMMENT_REQUEST
 }
 const deleteComment = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
   const { id } = req.params
-  const result = await commentsService.deleteComment(id)
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const result = await commentsService.deleteComment(id, user_id)
+  if (!result) {
+    return responseError(res, {
+      message: 'Comment không tồn tại hoặc bạn không có quyền xóa',
+      code: 400 // Bad request
+    })
+  }
   return responseSuccess(res, {
     message: 'Xóa comment thành công',
     data: result

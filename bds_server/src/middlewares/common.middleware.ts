@@ -4,10 +4,12 @@ import httpStatusCode from '~/constants/httpStatusCode'
 import messages from '~/constants/message'
 import { ACCOUNT_TYPE, ROLE_TYPE } from '~/enums/user.enum'
 import userService from '~/services/users.service'
+import vipUserDetailsService from '~/services/vip_user_detail.service'
 import { TokenPayload } from '~/type'
 import hashPassword from '~/utils/crypto'
 import { ErrorWithMessage } from '~/utils/error'
 import JwtModule from '~/utils/jwt'
+import { responseError } from '~/utils/response'
 import validateSchema from '~/utils/validation'
 
 const registerBodyValidator = validateSchema(
@@ -302,6 +304,21 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
   }
   next()
 }
+const isVipUser = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const user = await userService.findUserById(user_id)
+  if (!user) {
+    return res.status(httpStatusCode.NOT_FOUND).json({ message: 'Không tìm thấy người dùng' })
+  }
+  const vip_user_detail = await vipUserDetailsService.getVipUserByUserId(user_id)
+  if (!vip_user_detail) {
+    throw new ErrorWithMessage({
+      message: 'Bạn không phải là người dùng VIP',
+      status: httpStatusCode.FORBIDDEN
+    })
+  }
+  next()
+}
 const commonMiddlewares = {
   registerBodyValidator,
   loginBodyValidator,
@@ -311,6 +328,7 @@ const commonMiddlewares = {
   forgotPasswordValidator,
   changePasswordValidator,
   resetPasswordValidator,
-  isAdmin
+  isAdmin,
+  isVipUser,
 }
 export default commonMiddlewares
