@@ -24,10 +24,14 @@ import paypalService from './paypal_api'
 import videoRoutes from './routes/video.routes'
 import vipUserDetailsRoutes from './routes/vip_user_details.routes'
 import { POST_STATUS } from './enums/util.enum'
+import fetch from 'node-fetch'
+import { responseSuccess } from './utils/response'
 const app = express()
 app.use(
   cors({
-    origin: [env_config.CLIENT_PORTS as string, 'http://127.0.0.1:5500']
+    origin: [(env_config.CLIENT_PORTS as string) || 'http://localhost:5173', 'http://127.0.0.1:5500'],
+    credentials: true,
+    optionsSuccessStatus: 200
   })
 )
 app.use(morgan('dev'))
@@ -41,7 +45,21 @@ app.get('/upload-image-example', (req, res) => {
 app.get('', (req, res) => {
   return res.render('upLoadVideo')
 })
-
+app.get('/api/province', async (req, res) => {
+  const result = await fetch('https://vapi.vnappmob.com/api/province/')
+  return responseSuccess(res, {
+    message: 'Lấy province thành công',
+    data: await result.json()
+  })
+})
+app.get('/api/district/:id', async (req, res) => {
+  const { id } = req.params
+  const result = await fetch(`https://vapi.vnappmob.com/api/province/district/${id}`)
+  return responseSuccess(res, {
+    message: 'Lấy district thành công',
+    data: await result.json()
+  })
+})
 // Connect to the database
 databaseService.connect()
 app.use('/real-estate-news', realEstateNewsRoutes)
@@ -121,6 +139,30 @@ cron.schedule('0 0 * * *', async () => {
       }
     }
     console.log('Cập nhật trạng thái tin đăng')
+  } catch (error) {
+    console.log(error)
+  }
+})
+// Cập nhật trạng thái vip tự động sau 1 phút
+cron.schedule('*/1 * * * *', async () => {
+  try {
+    const vipUsers = await databaseService.vip_user_details.find().toArray()
+    for (const vipUser of vipUsers) {
+      const now = new Date()
+      if (now > vipUser.end_date) {
+        await databaseService.vip_user_details.findOneAndUpdate(
+          {
+            _id: vipUser._id
+          },
+          {
+            $set: {
+              current_active: false
+            }
+          }
+        )
+      }
+    }
+    console.log('Cập nhật trạng thái vip')
   } catch (error) {
     console.log(error)
   }

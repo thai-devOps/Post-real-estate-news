@@ -1,7 +1,11 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
+import { ObjectId } from 'mongodb'
 import { UserProfile } from '~/models/requests/users.request'
+import { USER_SCHEMA } from '~/models/schemas/User.schema'
+import { VIP_PACKAGE_SCHEMA } from '~/models/schemas/VipPackage.schema'
 import userService from '~/services/users.service'
+import vipUserDetailsService from '~/services/vip_user_detail.service'
 import { TokenPayload } from '~/type'
 import { responseSuccess } from '~/utils/response'
 const getProfile = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
@@ -102,6 +106,25 @@ const unlockAccount = async (req: Request<ParamsDictionary, any, any, any>, res:
     data: result
   })
 }
+const getAllUsers = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+  const user_vip = (await vipUserDetailsService.getUserVip()) as {
+    _id: ObjectId
+    current_active: boolean
+    user: USER_SCHEMA
+    package: VIP_PACKAGE_SCHEMA
+    start_date: Date
+    end_date: Date
+  }[]
+  // Chọn trong danh sách users loại trừ những user_vip trên
+  const users = await userService.getAllUsers()
+  const users_without_vip = users.filter(
+    (user) => !user_vip.find((vip) => vip.user._id.toString() === user._id.toString())
+  ) // 
+  return responseSuccess(res, {
+    message: 'Lấy danh sách người dùng thành công',
+    data: users_without_vip // Trả về danh sách người dùng không bao gồm user_vip
+  })
+}
 const usersControllers = {
   getProfile,
   updateProfile,
@@ -111,6 +134,7 @@ const usersControllers = {
   requestLockAccount,
   requestUnlockAccount,
   lockAccount,
-  unlockAccount
+  unlockAccount,
+  getAllUsers
 }
 export default usersControllers

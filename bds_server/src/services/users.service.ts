@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb'
 import JwtModule from '~/utils/jwt'
 import { ErrorWithMessage } from '~/utils/error'
 import { omit } from 'lodash'
-import { USER_VERIFY_STATUS } from '~/enums/user.enum'
+import { ROLE_TYPE, USER_VERIFY_STATUS } from '~/enums/user.enum'
 import { TokenPayload } from '~/type'
 import refreshTokenService from './refresh_tokens.service'
 import { sendEmailResetPassword } from '~/utils/email'
@@ -224,6 +224,9 @@ class UserService {
       { $set: { verify: USER_VERIFY_STATUS.VERIFIED, updated_at: new Date() } },
       { returnDocument: 'after' }
     )
+  }
+  public async getAllUsers() {
+    return databaseService.users.find({ role: ROLE_TYPE.USER }).toArray()
   }
 }
 

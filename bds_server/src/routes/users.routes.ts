@@ -203,4 +203,17 @@ userRoutes.put(
   commonMiddlewares.isAdmin,
   wrapRequestHandler(usersControllers.unlockAccount)
 )
+/**
+ * description: get all users
+ * methods: GET
+ * headers: {Authorization: {description: Bearer access_token}}
+ * path: /users
+ * middlewares: isAdmin
+ */
+userRoutes.get(
+  '/',
+  commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isAdmin,
+  wrapRequestHandler(usersControllers.getAllUsers)
+)
 export default userRoutes

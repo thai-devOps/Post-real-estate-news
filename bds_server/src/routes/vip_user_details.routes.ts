@@ -15,5 +15,13 @@ vipUserDetailsRoutes.get(
   commonMiddlewares.isAdmin,
   wrapRequestHandler(vipUserDetailsControllers.getAllUserVipDetails)
 )
+/**
+ * description: Get vip user history by user id
+ */
+vipUserDetailsRoutes.get(
+  '/:id',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(vipUserDetailsControllers.getVipUserHistoryByUserId)
+)
 
 export default vipUserDetailsRoutes

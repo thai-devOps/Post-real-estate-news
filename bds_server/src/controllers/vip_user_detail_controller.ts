@@ -15,9 +15,18 @@ const getAllUserVipDetails = async (req: Request, res: Response) => {
     data: result
   })
 }
+const getVipUserHistoryByUserId = async (req: Request<ParamsDictionary>, res: Response) => {
+  const id = req.params.id
+  const result = await vipUserDetailsService.getVipUserHistoryByUserId(id)
+  return responseSuccess(res, {
+    message: 'Get vip user history successfully',
+    data: result
+  })
+}
 const vipUserDetailsControllers = {
   createDetail,
   getDetailsByUserId,
-  getAllUserVipDetails
+  getAllUserVipDetails,
+  getVipUserHistoryByUserId
 }
 export default vipUserDetailsControllers

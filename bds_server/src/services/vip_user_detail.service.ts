@@ -74,16 +74,25 @@ class VipUserDetailsService {
             package: {
               $arrayElemAt: ['$package', 0]
             },
-            start_time: 1,
-            end_time: 1,
+            start_date: 1,
+            end_date: 1,
             current_active: 1
           }
         }
       ])
       .toArray()
   }
+  public async getUserExcludeVip() {
+    return databaseService.vip_user_details.find
+  }
   public async getVipUserByUserId(userId: string) {
     return await databaseService.vip_user_details.findOne({ user_id: new ObjectId(userId), current_active: true })
+  }
+  // Lấy lịch sử vip của người dùng
+  public async getVipUserHistoryByUserId(userId: string) {
+    return await databaseService.vip_user_details
+      .find({ user_id: new ObjectId(userId), current_active: false })
+      .toArray()
   }
   public async updateVipUserDetail(id: string, payload: VIP_USER_DETAIL_REQUEST_BODY) {
     return await databaseService.vip_user_details.findOneAndUpdate(
