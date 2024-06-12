@@ -119,7 +119,7 @@ const getAllUsers = async (req: Request<ParamsDictionary, any, any, any>, res: R
   const users = await userService.getAllUsers()
   const users_without_vip = users.filter(
     (user) => !user_vip.find((vip) => vip.user._id.toString() === user._id.toString())
-  ) // 
+  )
   return responseSuccess(res, {
     message: 'Lấy danh sách người dùng thành công',
     data: users_without_vip // Trả về danh sách người dùng không bao gồm user_vip

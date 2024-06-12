@@ -103,10 +103,10 @@ const createRealEstateNew = async (
       // Cập nhật lại tin xu hướng cũ có isPriority = true & trendPosition = 0
       const { is_trend } = req.body
       if (is_trend) {
-        const oldTrendPost = await realEstateNewsService.getTopNews({})
-        if (oldTrendPost) {
-          await realEstateNewsService.updateUntrendOldTrendPost(oldTrendPost)
-        }
+        // const oldTrendPost = await realEstateNewsService.getTopNews({})
+        // if (oldTrendPost) {
+        //   await realEstateNewsService.updateUntrendOldTrendPost(oldTrendPost)
+        // }
         const payload: Omit<REAL_ESTATE_NEW_REQUEST_BODY, 'is_trend'> = {
           ...req.body,
           vip: {
@@ -119,7 +119,7 @@ const createRealEstateNew = async (
           },
           time_existed: package_vip.priviLeges.postingLimit.durationPerPost,
           score: package_vip.vip_score,
-          is_priority: true
+          is_priority: false
         }
         result = await realEstateNewsService.create(payload, user_id)
       } else {

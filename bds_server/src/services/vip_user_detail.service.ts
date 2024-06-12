@@ -91,7 +91,32 @@ class VipUserDetailsService {
   // Lấy lịch sử vip của người dùng
   public async getVipUserHistoryByUserId(userId: string) {
     return await databaseService.vip_user_details
-      .find({ user_id: new ObjectId(userId), current_active: false })
+      .aggregate([
+        {
+          $lookup: {
+            from: 'vip_packages',
+            localField: 'package_id',
+            foreignField: '_id',
+            as: 'package'
+          }
+        },
+        {
+          $match: {
+            user_id: new ObjectId(userId),
+            current_active: false
+          }
+        },
+        {
+          $project: {
+            package: {
+              $arrayElemAt: ['$package', 0]
+            },
+            start_date: 1,
+            end_date: 1,
+            current_active: 1
+          }
+        }
+      ])
       .toArray()
   }
   public async updateVipUserDetail(id: string, payload: VIP_USER_DETAIL_REQUEST_BODY) {

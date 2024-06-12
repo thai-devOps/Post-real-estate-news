@@ -28,7 +28,40 @@ const createPayment = async (req: Request<ParamsDictionary, any, PAYMENT_REQUEST
       status: httpStatusCode.BAD_REQUEST
     })
   }
+  const { is_paid } = req.body
   const result = await paymentService.createPayment(payload, user_id)
+  if (is_paid) {
+    const user = (await userService.getUserById(user_id)) as USER_SCHEMA
+    const payment = (await paymentService.confirmPayment(result.insertedId.toString())) as PAYMENT_SCHEMA
+    const endDate: Date = new Date()
+    if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_DAY) {
+      endDate.setDate(endDate.getDate() + 1)
+    } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_WEEK) {
+      endDate.setDate(endDate.getDate() + 7)
+    } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_MONTH) {
+      endDate.setMonth(endDate.getMonth() + 1)
+    } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_YEAR) {
+      endDate.setFullYear(endDate.getFullYear() + 1)
+    }
+    const details_payload: VIP_USER_DETAIL_REQUEST_BODY = {
+      user_id: user._id.toString(),
+      package_id: package_id,
+      start_date: new Date(),
+      end_date: endDate
+    }
+    const createVipDetail = await vipUserDetailsService.create(details_payload)
+    const vip_user_detail = (await vipUserDetailsService.getById(
+      createVipDetail.insertedId.toString()
+    )) as VIP_USER_DETAIL_SCHEMA
+    await paymentService.confirmPayment(result.insertedId.toString())
+    await sendEmailSignVipSuccess({
+      user,
+      payment,
+      vip_package: package_vip,
+      vip_detail: vip_user_detail,
+      subject: 'Đăng ký gói vip thành công'
+    })
+  }
   return responseSuccess(res, {
     message: 'Tạo thanh toán thành công',
     data: result

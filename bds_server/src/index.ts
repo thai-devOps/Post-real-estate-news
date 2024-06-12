@@ -23,7 +23,7 @@ import paymentsRoutes from './routes/payments.routes'
 import paypalService from './paypal_api'
 import videoRoutes from './routes/video.routes'
 import vipUserDetailsRoutes from './routes/vip_user_details.routes'
-import { POST_STATUS } from './enums/util.enum'
+import { POST_STATUS, VIP_STATUS } from './enums/util.enum'
 import fetch from 'node-fetch'
 import { responseSuccess } from './utils/response'
 const app = express()
@@ -81,13 +81,13 @@ cron.schedule('0 0 * * *', async () => {
   }
 })
 // Update trending posts every 5 minutes
-cron.schedule('*/5 * * * *', async () => {
+cron.schedule('*/1 * * * *', async () => {
   try {
     const topTrending = await realEstateNewsService.getTopNews({})
     if (!topTrending) {
       return
     }
-    // tìm tất cả tin đăng có vip.is_top = true  và ! topTrending._id
+    // tìm tất cả tin đăng có vip.is_top = true  và ! pTrending._idto
     const topNews = await databaseService.real_estate_news
       .find({
         'vip.is_top': true,
@@ -156,7 +156,8 @@ cron.schedule('*/1 * * * *', async () => {
           },
           {
             $set: {
-              current_active: false
+              current_active: false,
+              status: VIP_STATUS.EXPIRED
             }
           }
         )

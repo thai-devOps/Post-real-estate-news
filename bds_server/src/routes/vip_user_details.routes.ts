@@ -17,6 +17,7 @@ vipUserDetailsRoutes.get(
 )
 /**
  * description: Get vip user history by user id
+ * path: /vip-user-details/:id
  */
 vipUserDetailsRoutes.get(
   '/:id',
