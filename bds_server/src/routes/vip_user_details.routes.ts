@@ -24,5 +24,18 @@ vipUserDetailsRoutes.get(
   commonMiddlewares.accessTokenValidator,
   wrapRequestHandler(vipUserDetailsControllers.getVipUserHistoryByUserId)
 )
+/**
+ * description: Get current vip user by user id
+ * path: /vip-user-details/current
+ * headers: {
+ * Authorization: {
+ * description: Bearer access_token
+ * }
+ */
+vipUserDetailsRoutes.get(
+  '/current',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(vipUserDetailsControllers.getCurrentVip)
+)
 
 export default vipUserDetailsRoutes
