@@ -45,6 +45,9 @@ app.get('/upload-image-example', (req, res) => {
 app.get('', (req, res) => {
   return res.render('upLoadVideo')
 })
+app.get('/checkout', (req, res) => {
+  return res.render('checkout')
+})
 app.get('/api/province', async (req, res) => {
   const result = await fetch('https://vapi.vnappmob.com/api/province/')
   return responseSuccess(res, {
@@ -81,7 +84,7 @@ cron.schedule('0 0 * * *', async () => {
   }
 })
 // Update trending posts every 5 minutes
-cron.schedule('*/1 * * * *', async () => {
+cron.schedule('*/5 * * * *', async () => {
   try {
     const topTrending = await realEstateNewsService.getTopNews({})
     if (!topTrending) {

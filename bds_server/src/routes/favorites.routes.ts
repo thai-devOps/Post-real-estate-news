@@ -42,9 +42,8 @@ favoritesRoutes.get(
  *
  */
 favoritesRoutes.delete(
-  '/delete',
+  '/delete/:id',
   commonMiddlewares.accessTokenValidator,
-  favoritesMiddlewares.createFavoriteValidator,
   wrapRequestHandler(favoritesControllers.unFavorite)
 )
 

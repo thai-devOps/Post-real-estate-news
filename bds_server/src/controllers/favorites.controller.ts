@@ -23,9 +23,9 @@ const createFavorite = async (req: Request<ParamsDictionary, any, FAVORITE_REQUE
   })
 }
 const unFavorite = async (req: Request<ParamsDictionary, any, FAVORITE_REQUEST_BODY, any>, res: Response) => {
-  const { post_id } = req.body
+  const { id } = req.params
   const { user_id } = req.decoded_access_token as TokenPayload
-  const result = await favoritesService.deleteFavoriteByPostIdAndUserId({ post_id, user_id })
+  const result = await favoritesService.deleteFavoriteByPostIdAndUserId({ post_id: id, user_id })
   if (!result) {
     return responseSuccess(res, {
       message: 'Không tìm thấy yêu thích để xóa',
