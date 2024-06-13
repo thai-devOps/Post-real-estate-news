@@ -33,6 +33,9 @@ class FavoritesService {
       post_id: new ObjectId(post_id)
     })
   }
+  public async getAllFavoritesOfUser(user_id: string) {
+    return await databaseService.favorites.find({ user_id: new ObjectId(user_id) }).toArray()
+  }
 }
 const favoritesService = new FavoritesService()
 export default favoritesService

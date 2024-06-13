@@ -55,9 +55,21 @@ const getFavoritesByUserIdAndPostId = async (req: Request<ParamsDictionary, any,
     data: result
   })
 }
+const getAllFavoritesOfUser = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const result = await favoritesService.getAllFavoritesOfUser(user_id)
+  const post_ids = result.map((item) => item.post_id)
+  return responseSuccess(res, {
+    message: 'Truy xuất tất cả lượt thích của user thành công',
+    data: {
+      post_ids
+    }
+  })
+}
 const favoritesControllers = {
   createFavorite,
   unFavorite,
-  getFavoritesByUserIdAndPostId
+  getFavoritesByUserIdAndPostId,
+  getAllFavoritesOfUser
 }
 export default favoritesControllers

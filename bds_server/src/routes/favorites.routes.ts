@@ -46,5 +46,20 @@ favoritesRoutes.delete(
   commonMiddlewares.accessTokenValidator,
   wrapRequestHandler(favoritesControllers.unFavorite)
 )
+/**
+ * description: Get all favorites of a user
+ * method: GET
+ * path: /favorites/all
+ * headers: {
+ * Authorization: {
+ * description: Bearer access_token
+ * }
+ */
+
+favoritesRoutes.get(
+  '/user',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(favoritesControllers.getAllFavoritesOfUser)
+)
 
 export default favoritesRoutes
