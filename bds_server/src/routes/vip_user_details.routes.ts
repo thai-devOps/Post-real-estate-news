@@ -16,15 +16,6 @@ vipUserDetailsRoutes.get(
   wrapRequestHandler(vipUserDetailsControllers.getAllUserVipDetails)
 )
 /**
- * description: Get vip user history by user id
- * path: /vip-user-details/:id
- */
-vipUserDetailsRoutes.get(
-  '/:id',
-  commonMiddlewares.accessTokenValidator,
-  wrapRequestHandler(vipUserDetailsControllers.getVipUserHistoryByUserId)
-)
-/**
  * description: Get current vip user by user id
  * path: /vip-user-details/current
  * headers: {
@@ -36,6 +27,15 @@ vipUserDetailsRoutes.get(
   '/current',
   commonMiddlewares.accessTokenValidator,
   wrapRequestHandler(vipUserDetailsControllers.getCurrentVip)
+)
+/**
+ * description: Get vip user history by user id
+ * path: /vip-user-details/:id
+ */
+vipUserDetailsRoutes.get(
+  '/:id',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(vipUserDetailsControllers.getVipUserHistoryByUserId)
 )
 
 export default vipUserDetailsRoutes

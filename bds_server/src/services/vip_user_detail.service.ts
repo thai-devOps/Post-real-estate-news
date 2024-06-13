@@ -89,32 +89,48 @@ class VipUserDetailsService {
     return await databaseService.vip_user_details.findOne({ user_id: new ObjectId(userId), current_active: true })
   }
   public async getCurrentVip(userId: string) {
-    return await databaseService.vip_user_details.aggregate([
-      {
-        $lookup: {
-          from: 'vip_packages',
-          localField: 'package_id',
-          foreignField: '_id',
-          as: 'package'
+    return databaseService.vip_user_details
+      .aggregate([
+        {
+          $lookup: {
+            from: 'vip_packages',
+            localField: 'package_id',
+            foreignField: '_id',
+            as: 'package'
+          }
+        },
+        // lookup user
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user_id',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $match: {
+            user_id: new ObjectId(userId)
+          }
+        },
+        {
+          $project: {
+            user: {
+              $arrayElemAt: ['$user', 0]
+            },
+            package: {
+              $arrayElemAt: ['$package', 0]
+            },
+            posting_used: 1,
+            comments_used: 1,
+            featured_post_used: 1,
+            start_date: 1,
+            end_date: 1,
+            current_active: 1
+          }
         }
-      },
-      {
-        $match: {
-          user_id: new ObjectId(userId),
-          current_active: true
-        }
-      },
-      {
-        $project: {
-          package: {
-            $arrayElemAt: ['$package', 0]
-          },
-          start_date: 1,
-          end_date: 1,
-          current_active: 1
-        }
-      }
-    ])
+      ])
+      .toArray()
   }
   // Lấy lịch sử vip của người dùng
   public async getVipUserHistoryByUserId(userId: string) {
