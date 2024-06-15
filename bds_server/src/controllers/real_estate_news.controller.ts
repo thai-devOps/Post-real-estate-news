@@ -353,6 +353,76 @@ const deleteAllRealEstateNews = async (req: Request<ParamsDictionary, any, any, 
     data: result
   })
 }
+const getAllPosts = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+  const {
+    direction,
+    price,
+    province,
+    district,
+    ward,
+    type,
+    rating,
+    property_type_id,
+    featured,
+    page = '1',
+    limit = '20',
+    order_by = 'desc',
+    sort_by = 'view'
+  } = req.query as Record<any, string>
+
+  const queryParams = { direction, price, featured, province, district, ward, type, rating, property_type_id }
+
+  let condition: any = {}
+
+  // eslint-disable-next-line prefer-const
+  for (const [key, value] of Object.entries(queryParams)) {
+    if (value) {
+      if (key === 'price') {
+        const [minPrice, maxPrice] = value.split('-')
+        condition = {
+          ...condition,
+          'price.value': {
+            $gte: parseInt(minPrice),
+            $lte: parseInt(maxPrice)
+          }
+        }
+      } else if (key === 'featured') {
+        condition = {
+          ...condition,
+          'vip.is_featured': value === 'true'
+        }
+      } else if (key === 'rating') {
+        condition = {
+          ...condition,
+          rating: parseInt(value)
+        }
+      } else if (key === 'property_type_id') {
+        condition.property_type_id = new ObjectId(value)
+      } else {
+        condition[key] = value
+      }
+    }
+  }
+  const result = await realEstateNewsService.getAll({
+    page: parseInt(page),
+    limit: parseInt(limit),
+    order_by,
+    sort_by,
+    condition
+  })
+  return responseSuccess(res, {
+    message: 'Lấy danh sách tin bất động sản thành công',
+    data: result
+  })
+}
+const getRealEstateNewsByStatus = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
+  const { status } = req.params
+  const result = await realEstateNewsService.getRealEstateNewsByStatus(status as POST_STATUS)
+  return responseSuccess(res, {
+    message: 'Lấy danh sách tin bất động sản theo trạng thái thành công',
+    data: result
+  })
+}
 const realEstateNewsControllers = {
   createRealEstateNew,
   getRealEstateNews,
@@ -362,6 +432,8 @@ const realEstateNewsControllers = {
   deleteManyRealEstateNews,
   getRealEstateNewsByUserId,
   updatePostStatus,
-  deleteAllRealEstateNews
+  deleteAllRealEstateNews,
+  getRealEstateNewsByStatus,
+  getAllPosts
 }
 export default realEstateNewsControllers

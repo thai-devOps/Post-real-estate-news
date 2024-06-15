@@ -83,14 +83,15 @@ cron.schedule('0 0 * * *', async () => {
     console.log(error)
   }
 })
-// Update trending posts every 5 minutes
 cron.schedule('*/5 * * * *', async () => {
   try {
+    // Fetch top trending news
     const topTrending = await realEstateNewsService.getTopNews({})
     if (!topTrending) {
       return
     }
-    // tìm tất cả tin đăng có vip.is_top = true  và ! pTrending._idto
+
+    // Find all posts with vip.is_top = true, status = POST_STATUS.CONFIRMED, and is_priority = false
     const topNews = await databaseService.real_estate_news
       .find({
         'vip.is_top': true,
@@ -99,26 +100,27 @@ cron.schedule('*/5 * * * *', async () => {
       })
       .sort({ 'vip.trendPosition': 1 })
       .toArray()
+
     if (topNews.length === 0) {
       return
     }
+
+    // Update the vip.trendPosition and is_priority of the top news posts
     for (let i = 0; i < topNews.length; i++) {
       await databaseService.real_estate_news.findOneAndUpdate(
-        {
-          _id: topNews[i]._id
-        },
+        { _id: topNews[i]._id },
         {
           $set: {
-            is_priority: i === 0 ? true : false,
+            is_priority: i === 0,
             'vip.trendPosition': i
           }
         }
       )
     }
+
+    // Update the top trending post
     await databaseService.real_estate_news.findOneAndUpdate(
-      {
-        _id: topTrending._id
-      },
+      { _id: topTrending._id },
       {
         $set: {
           is_priority: false,
@@ -126,9 +128,10 @@ cron.schedule('*/5 * * * *', async () => {
         }
       }
     )
+
     console.log('Cập nhật tin đăng xu hướng...')
-  } catch {
-    console.log('Failed to update trending posts')
+  } catch (error) {
+    console.error('Failed to update trending posts', error)
   }
 })
 // Update post status if expired every day at 00:00 AM
@@ -146,8 +149,8 @@ cron.schedule('0 0 * * *', async () => {
     console.log(error)
   }
 })
-// Cập nhật trạng thái vip tự động sau 1 phút
-cron.schedule('*/1 * * * *', async () => {
+// Cập nhật trạng thái vip tự động sau mỗi ngày 00:00 AM
+cron.schedule('0 0 * * * *', async () => {
   try {
     const vipUsers = await databaseService.vip_user_details.find().toArray()
     for (const vipUser of vipUsers) {

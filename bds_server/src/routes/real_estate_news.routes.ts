@@ -36,6 +36,29 @@ realEstateNewsRoutes.post(
  */
 realEstateNewsRoutes.get('/', wrapRequestHandler(realEstateNewsControllers.getRealEstateNews))
 /**
+ * description: Get all real estate news by status
+ * method: GET
+ * path: /real-estate-news/status/:status
+ */
+realEstateNewsRoutes.get(
+  '/status/:status',
+  commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isAdmin,
+  wrapRequestHandler(realEstateNewsControllers.getRealEstateNewsByStatus)
+)
+/**
+ * description: Get all post for admin
+ * method: GET
+ * path: /real-estate-news/admin/all
+ */
+realEstateNewsRoutes.get(
+  '/admin/all',
+  commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isAdmin,
+  wrapRequestHandler(realEstateNewsControllers.getAllPosts)
+)
+
+/**
  * description: Get real estate news by id
  * method: GET
  * path: /real-estate-news/:id

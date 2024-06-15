@@ -91,7 +91,7 @@ class VipUserDetailsService {
   public async getCurrentVip(userId: string) {
     return databaseService.vip_user_details
       .aggregate([
-        {
+        { 
           $lookup: {
             from: 'vip_packages',
             localField: 'package_id',

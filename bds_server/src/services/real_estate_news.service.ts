@@ -30,7 +30,7 @@ class RealEstateNewsService {
   }) {
     if (!page) page = 1
     if (!limit) limit = 10
-    if (!sort_by) sort_by = 'rating'
+    if (!sort_by) sort_by = 'created_at'
     if (!order_by) order_by = 'desc'
 
     const result = await Promise.all([
@@ -167,6 +167,9 @@ class RealEstateNewsService {
       status: POST_STATUS.CONFIRMED,
       'vip.is_top': true
     })
+  }
+  async getRealEstateNewsByStatus(status: POST_STATUS) {
+    return await databaseService.real_estate_news.find({ status }).toArray()
   }
 }
 const realEstateNewsService = new RealEstateNewsService()
