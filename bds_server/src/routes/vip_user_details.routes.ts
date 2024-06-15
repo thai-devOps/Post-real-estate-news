@@ -29,6 +29,21 @@ vipUserDetailsRoutes.get(
   wrapRequestHandler(vipUserDetailsControllers.getCurrentVip)
 )
 /**
+ * description: Get all vip user details
+ * path: /user-vips/all
+ */
+vipUserDetailsRoutes.get(
+  '/all',
+  commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isAdmin,
+  wrapRequestHandler(vipUserDetailsControllers.getAllVipUserDetails)
+)
+/**
+ * description: Get vip user detail by id
+ * path: /vip-user-details/:id
+ */
+
+/**
  * description: Get vip user history by user id
  * path: /vip-user-details/:id
  */

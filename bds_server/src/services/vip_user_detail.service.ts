@@ -91,7 +91,7 @@ class VipUserDetailsService {
   public async getCurrentVip(userId: string) {
     return databaseService.vip_user_details
       .aggregate([
-        { 
+        {
           $lookup: {
             from: 'vip_packages',
             localField: 'package_id',
@@ -175,6 +175,56 @@ class VipUserDetailsService {
       },
       { returnDocument: 'after' }
     )
+  }
+  public async getAllVipUserDetails() {
+    const results = await Promise.all([
+      databaseService.vip_user_details
+        .aggregate([
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'user_id',
+              foreignField: '_id',
+              as: 'user'
+            }
+          },
+          {
+            $lookup: {
+              from: 'vip_packages',
+              localField: 'package_id',
+              foreignField: '_id',
+              as: 'package'
+            }
+          },
+          {
+            $sort: {
+              end_date: -1
+            }
+          },
+          {
+            $project: {
+              user: {
+                $arrayElemAt: ['$user', 0]
+              },
+              package: {
+                $arrayElemAt: ['$package', 0]
+              },
+              start_date: 1,
+              posting_used: 1,
+              comments_used: 1,
+              featured_post_used: 1,
+              end_date: 1,
+              current_active: 1
+            }
+          }
+        ])
+        .toArray(),
+      databaseService.vip_user_details.countDocuments()
+    ])
+    return {
+      total: results[1],
+      items: results[0]
+    }
   }
 }
 const vipUserDetailsService = new VipUserDetailsService()

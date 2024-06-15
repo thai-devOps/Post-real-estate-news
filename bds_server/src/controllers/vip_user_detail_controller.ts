@@ -32,11 +32,19 @@ const getCurrentVip = async (req: Request, res: Response) => {
     data: result
   })
 }
+const getAllVipUserDetails = async (req: Request, res: Response) => {
+  const result = await vipUserDetailsService.getAllVipUserDetails()
+  return responseSuccess(res, {
+    message: 'Get all vip user details successfully',
+    data: result
+  })
+}
 const vipUserDetailsControllers = {
   createDetail,
   getDetailsByUserId,
   getAllUserVipDetails,
   getVipUserHistoryByUserId,
-  getCurrentVip
+  getCurrentVip,
+  getAllVipUserDetails
 }
 export default vipUserDetailsControllers
