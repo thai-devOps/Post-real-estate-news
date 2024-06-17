@@ -218,6 +218,21 @@ const getRealEstateNews = async (req: Request, res: Response) => {
         }
       } else if (key === 'property_type_id') {
         condition.property_type_id = new ObjectId(value)
+      } else if (key === 'province') {
+        condition = {
+          ...condition,
+          'address.province': value
+        }
+      } else if (key === 'district') {
+        condition = {
+          ...condition,
+          'address.district': value
+        }
+      } else if (key === 'ward') {
+        condition = {
+          ...condition,
+          'address.ward': value
+        }
       } else {
         condition[key] = value
       }
@@ -398,6 +413,21 @@ const getAllPosts = async (req: Request<ParamsDictionary, any, any, any>, res: R
         }
       } else if (key === 'property_type_id') {
         condition.property_type_id = new ObjectId(value)
+      } else if (key === 'province') {
+        condition = {
+          ...condition,
+          'address.province': value
+        }
+      } else if (key === 'district') {
+        condition = {
+          ...condition,
+          'address.district': value
+        }
+      } else if (key === 'ward') {
+        condition = {
+          ...condition,
+          'address.ward': value
+        }
       } else {
         condition[key] = value
       }
