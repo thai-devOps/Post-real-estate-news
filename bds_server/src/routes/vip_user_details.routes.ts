@@ -24,16 +24,22 @@ vipUserDetailsRoutes.get(
  * }
  */
 vipUserDetailsRoutes.get(
-  '/current',
+  '/current-active',
   commonMiddlewares.accessTokenValidator,
-  wrapRequestHandler(vipUserDetailsControllers.getCurrentVip)
+  wrapRequestHandler(vipUserDetailsControllers.getActiveCurrentVip)
+)
+
+vipUserDetailsRoutes.get(
+  '/history',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(vipUserDetailsControllers.getUserVipHistory)
 )
 /**
  * description: Get all vip user details
  * path: /user-vips/all
  */
 vipUserDetailsRoutes.get(
-  '/all',
+  '/all-details',
   commonMiddlewares.accessTokenValidator,
   commonMiddlewares.isAdmin,
   wrapRequestHandler(vipUserDetailsControllers.getAllVipUserDetails)
@@ -44,7 +50,7 @@ vipUserDetailsRoutes.get(
  */
 
 /**
- * description: Get vip user history by user id
+ * description: Get vip-user-detail by id
  * path: /vip-user-details/:id
  */
 vipUserDetailsRoutes.get(

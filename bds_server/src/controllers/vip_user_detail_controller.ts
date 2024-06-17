@@ -24,11 +24,11 @@ const getVipUserHistoryByUserId = async (req: Request<ParamsDictionary>, res: Re
     data: result
   })
 }
-const getCurrentVip = async (req: Request, res: Response) => {
+const getUserVipHistory = async (req: Request, res: Response) => {
   const { user_id } = req.decoded_access_token as TokenPayload
-  const result = await vipUserDetailsService.getCurrentVip(user_id)
+  const result = await vipUserDetailsService.getHistory(user_id)
   return responseSuccess(res, {
-    message: 'Get current vip user successfully',
+    message: 'Get user vip hist successfully',
     data: result
   })
 }
@@ -39,12 +39,21 @@ const getAllVipUserDetails = async (req: Request, res: Response) => {
     data: result
   })
 }
+const getActiveCurrentVip = async (req: Request, res: Response) => {
+  const { user_id } = req.decoded_access_token as TokenPayload
+  const result = await vipUserDetailsService.getActiveCurrentVip(user_id)
+  return responseSuccess(res, {
+    message: 'Get active current vip successfully',
+    data: result[0]
+  })
+}
 const vipUserDetailsControllers = {
   createDetail,
   getDetailsByUserId,
   getAllUserVipDetails,
   getVipUserHistoryByUserId,
-  getCurrentVip,
-  getAllVipUserDetails
+  getUserVipHistory,
+  getAllVipUserDetails,
+  getActiveCurrentVip
 }
 export default vipUserDetailsControllers

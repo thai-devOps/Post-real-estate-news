@@ -2,6 +2,7 @@ import { VIP_USER_DETAIL_REQUEST_BODY } from '~/models/requests/vip_user_detail.
 import databaseService from './database.service'
 import { VIP_USER_DETAIL_SCHEMA } from '~/models/schemas/VipUserDetail.schema'
 import { ObjectId } from 'mongodb'
+import { VIP_STATUS } from '~/enums/util.enum'
 
 class VipUserDetailsService {
   async create(payload: VIP_USER_DETAIL_REQUEST_BODY) {
@@ -176,7 +177,7 @@ class VipUserDetailsService {
       { returnDocument: 'after' }
     )
   }
-  public async getAllVipUserDetails() {
+  public async getHistory(userId: string) {
     const results = await Promise.all([
       databaseService.vip_user_details
         .aggregate([
@@ -186,6 +187,11 @@ class VipUserDetailsService {
               localField: 'user_id',
               foreignField: '_id',
               as: 'user'
+            }
+          },
+          {
+            $match: {
+              user_id: new ObjectId(userId)
             }
           },
           {
@@ -212,6 +218,7 @@ class VipUserDetailsService {
               start_date: 1,
               posting_used: 1,
               comments_used: 1,
+              status: 1,
               featured_post_used: 1,
               end_date: 1,
               current_active: 1
@@ -219,12 +226,60 @@ class VipUserDetailsService {
           }
         ])
         .toArray(),
-      databaseService.vip_user_details.countDocuments()
+      databaseService.vip_user_details.countDocuments({ user_id: new ObjectId(userId) })
     ])
     return {
       total: results[1],
       items: results[0]
     }
+  }
+  public async getAllVipUserDetails() {
+    return await databaseService.vip_user_details.find().toArray()
+  }
+  public async getActiveCurrentVip(userId: string) {
+    return await databaseService.vip_user_details
+      .aggregate([
+        {
+          $lookup: {
+            from: 'vip_packages',
+            localField: 'package_id',
+            foreignField: '_id',
+            as: 'package'
+          }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user_id',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $match: {
+            user_id: new ObjectId(userId),
+            current_active: true
+          }
+        },
+        {
+          $project: {
+            package: {
+              $arrayElemAt: ['$package', 0]
+            },
+            user: {
+              $arrayElemAt: ['$user', 0]
+            },
+            start_date: 1,
+            posting_used: 1,
+            comments_used: 1,
+            featured_post_used: 1,
+            status: 1,
+            end_date: 1,
+            current_active: 1
+          }
+        }
+      ])
+      .toArray()
   }
 }
 const vipUserDetailsService = new VipUserDetailsService()

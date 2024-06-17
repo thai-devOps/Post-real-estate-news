@@ -58,12 +58,10 @@ const getFavoritesByUserIdAndPostId = async (req: Request<ParamsDictionary, any,
 const getAllFavoritesOfUser = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
   const { user_id } = req.decoded_access_token as TokenPayload
   const result = await favoritesService.getAllFavoritesOfUser(user_id)
-  const post_ids = result.map((item) => item.post_id)
+  const posts = result.map((item) => realEstateNewsService.getById(item.post_id.toString()))
   return responseSuccess(res, {
     message: 'Truy xuất tất cả lượt thích của user thành công',
-    data: {
-      post_ids
-    }
+    data: posts || []
   })
 }
 const favoritesControllers = {
