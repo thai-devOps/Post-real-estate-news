@@ -33,7 +33,16 @@ favoritesRoutes.get(
   commonMiddlewares.accessTokenValidator,
   wrapRequestHandler(favoritesControllers.getFavoritesByUserIdAndPostId)
 )
-
+/**
+ * description: Get all favorites posts of a user
+ * method: GET
+ * path: /favorites/all-posts
+ */
+favoritesRoutes.get(
+  '/all-posts',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(favoritesControllers.getAllFavoritePostsByUserId)
+)
 /**
  * description: Delete a favorite
  * method: DELETE

@@ -171,6 +171,9 @@ class RealEstateNewsService {
   async getRealEstateNewsByStatus(status: POST_STATUS) {
     return await databaseService.real_estate_news.find({ status }).toArray()
   }
+  async getAllFavoritePostsByUserId(ids: string[]) {
+    return await databaseService.real_estate_news.find({ _id: { $in: ids.map((id) => new ObjectId(id)) } }).toArray()
+  }
 }
 const realEstateNewsService = new RealEstateNewsService()
 export default realEstateNewsService

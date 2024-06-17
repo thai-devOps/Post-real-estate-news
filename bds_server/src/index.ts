@@ -67,113 +67,113 @@ app.get('/api/district/:id', async (req, res) => {
 databaseService.connect()
 app.use('/real-estate-news', realEstateNewsRoutes)
 // Update rating for all posts every day at 00:00 AM
-cron.schedule('0 0 * * *', async () => {
-  try {
-    const posts = await realEstateNewsService.getAllNotPagination()
-    const rawRating = posts.map((post) => calculateRaw(post.view, post.published_at))
-    const maxRating = Math.max(...rawRating)
-    const minRating = Math.min(...rawRating)
-    for (const post of posts) {
-      const rating = calculateRaw(post.view, post.published_at)
-      const normalizedRating = normalize(rating, maxRating, minRating)
-      await realEstateNewsService.updateRating(post._id.toString(), Math.round(normalizedRating * 10) / 10)
-    }
-    console.log('Update rating success')
-  } catch (error) {
-    console.log(error)
-  }
-})
-cron.schedule('*/5 * * * *', async () => {
-  try {
-    // Fetch top trending news
-    const topTrending = await realEstateNewsService.getTopNews({})
-    if (!topTrending) {
-      return
-    }
+// cron.schedule('0 0 * * *', async () => {
+//   try {
+//     const posts = await realEstateNewsService.getAllNotPagination()
+//     const rawRating = posts.map((post) => calculateRaw(post.view, post.published_at))
+//     const maxRating = Math.max(...rawRating)
+//     const minRating = Math.min(...rawRating)
+//     for (const post of posts) {
+//       const rating = calculateRaw(post.view, post.published_at)
+//       const normalizedRating = normalize(rating, maxRating, minRating)
+//       await realEstateNewsService.updateRating(post._id.toString(), Math.round(normalizedRating * 10) / 10)
+//     }
+//     console.log('Update rating success')
+//   } catch (error) {
+//     console.log(error)
+//   }
+// })
+// cron.schedule('*/5 * * * *', async () => {
+//   try {
+//     // Fetch top trending news
+//     const topTrending = await realEstateNewsService.getTopNews({})
+//     if (!topTrending) {
+//       return
+//     }
 
-    // Find all posts with vip.is_top = true, status = POST_STATUS.CONFIRMED, and is_priority = false
-    const topNews = await databaseService.real_estate_news
-      .find({
-        'vip.is_top': true,
-        status: POST_STATUS.CONFIRMED,
-        is_priority: false
-      })
-      .sort({ 'vip.trendPosition': 1 })
-      .toArray()
+//     // Find all posts with vip.is_top = true, status = POST_STATUS.CONFIRMED, and is_priority = false
+//     const topNews = await databaseService.real_estate_news
+//       .find({
+//         'vip.is_top': true,
+//         status: POST_STATUS.CONFIRMED,
+//         is_priority: false
+//       })
+//       .sort({ 'vip.trendPosition': 1 })
+//       .toArray()
 
-    if (topNews.length === 0) {
-      return
-    }
+//     if (topNews.length === 0) {
+//       return
+//     }
 
-    // Update the vip.trendPosition and is_priority of the top news posts
-    for (let i = 0; i < topNews.length; i++) {
-      await databaseService.real_estate_news.findOneAndUpdate(
-        { _id: topNews[i]._id },
-        {
-          $set: {
-            is_priority: i === 0,
-            'vip.trendPosition': i
-          }
-        }
-      )
-    }
+//     // Update the vip.trendPosition and is_priority of the top news posts
+//     for (let i = 0; i < topNews.length; i++) {
+//       await databaseService.real_estate_news.findOneAndUpdate(
+//         { _id: topNews[i]._id },
+//         {
+//           $set: {
+//             is_priority: i === 0,
+//             'vip.trendPosition': i
+//           }
+//         }
+//       )
+//     }
 
-    // Update the top trending post
-    await databaseService.real_estate_news.findOneAndUpdate(
-      { _id: topTrending._id },
-      {
-        $set: {
-          is_priority: false,
-          'vip.trendPosition': topNews.length
-        }
-      }
-    )
+//     // Update the top trending post
+//     await databaseService.real_estate_news.findOneAndUpdate(
+//       { _id: topTrending._id },
+//       {
+//         $set: {
+//           is_priority: false,
+//           'vip.trendPosition': topNews.length
+//         }
+//       }
+//     )
 
-    console.log('Cập nhật tin đăng xu hướng...')
-  } catch (error) {
-    console.error('Failed to update trending posts', error)
-  }
-})
-// Update post status if expired every day at 00:00 AM
-cron.schedule('0 0 * * *', async () => {
-  try {
-    const posts = await realEstateNewsService.getAllNotPagination()
-    for (const post of posts) {
-      const now = new Date()
-      if (now > post.expired_at) {
-        await realEstateNewsService.updateStatus(post._id.toString(), POST_STATUS.EXPIRED)
-      }
-    }
-    console.log('Cập nhật trạng thái tin đăng')
-  } catch (error) {
-    console.log(error)
-  }
-})
-// Cập nhật trạng thái vip tự động sau mỗi ngày 00:00 AM
-cron.schedule('0 0 * * * *', async () => {
-  try {
-    const vipUsers = await databaseService.vip_user_details.find().toArray()
-    for (const vipUser of vipUsers) {
-      const now = new Date()
-      if (now > vipUser.end_date) {
-        await databaseService.vip_user_details.findOneAndUpdate(
-          {
-            _id: vipUser._id
-          },
-          {
-            $set: {
-              current_active: false,
-              status: VIP_STATUS.EXPIRED
-            }
-          }
-        )
-      }
-    }
-    console.log('Cập nhật trạng thái vip')
-  } catch (error) {
-    console.log(error)
-  }
-})
+//     console.log('Cập nhật tin đăng xu hướng...')
+//   } catch (error) {
+//     console.error('Failed to update trending posts', error)
+//   }
+// })
+// // Update post status if expired every day at 00:00 AM
+// cron.schedule('0 0 * * *', async () => {
+//   try {
+//     const posts = await realEstateNewsService.getAllNotPagination()
+//     for (const post of posts) {
+//       const now = new Date()
+//       if (now > post.expired_at) {
+//         await realEstateNewsService.updateStatus(post._id.toString(), POST_STATUS.EXPIRED)
+//       }
+//     }
+//     console.log('Cập nhật trạng thái tin đăng')
+//   } catch (error) {
+//     console.log(error)
+//   }
+// })
+// // Cập nhật trạng thái vip tự động sau mỗi ngày 00:00 AM
+// cron.schedule('0 0 * * * *', async () => {
+//   try {
+//     const vipUsers = await databaseService.vip_user_details.find().toArray()
+//     for (const vipUser of vipUsers) {
+//       const now = new Date()
+//       if (now > vipUser.end_date) {
+//         await databaseService.vip_user_details.findOneAndUpdate(
+//           {
+//             _id: vipUser._id
+//           },
+//           {
+//             $set: {
+//               current_active: false,
+//               status: VIP_STATUS.EXPIRED
+//             }
+//           }
+//         )
+//       }
+//     }
+//     console.log('Cập nhật trạng thái vip')
+//   } catch (error) {
+//     console.log(error)
+//   }
+// })
 
 // Routes
 app.post('/api/orders', async (req, res) => {
