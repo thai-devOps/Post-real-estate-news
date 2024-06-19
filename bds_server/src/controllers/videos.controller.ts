@@ -80,7 +80,7 @@ const destroyVideos = async (
       destroyVideos.map(async (publicId) => {
         const [cloudinaryResult, dbResult] = await Promise.all([
           cloudinary.uploader.destroy(publicId, {
-            resource_type: 'image'
+            resource_type: 'video'
           }),
           videosService.deleteVideoByPublicId(publicId)
         ])
