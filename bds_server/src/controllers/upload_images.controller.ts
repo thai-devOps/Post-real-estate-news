@@ -148,7 +148,7 @@ const destroyImages = async (
         // Kiểm tra kết quả từng tác vụ và trả về thông báo phù hợp
         return {
           publicId,
-          cloudinary: cloudinaryResult[0],
+          cloudinary: cloudinaryResult,
           database: dbResult
         }
       })
