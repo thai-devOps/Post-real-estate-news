@@ -9,6 +9,9 @@ class VideosService {
   async getByID(id: string) {
     return await databaseService.videos.findOne({ _id: new ObjectId(id) })
   }
+  async deleteVideoByPublicId(publicId: string) {
+    return await databaseService.videos.findOneAndDelete({ public_id: publicId })
+  }
 }
 const videosService = new VideosService()
 export default videosService

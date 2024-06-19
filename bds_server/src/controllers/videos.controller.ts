@@ -3,7 +3,7 @@ import { v2 as cloudinary } from 'cloudinary'
 import { ParamsDictionary } from 'express-serve-static-core'
 import env_config from '~/configs/env.config'
 import videosService from '~/services/videos.service'
-import { responseSuccess } from '~/utils/response'
+import { responseError, responseSuccess } from '~/utils/response'
 import { ErrorWithMessage } from '~/utils/error'
 import httpStatusCode from '~/constants/httpStatusCode'
 
@@ -54,8 +54,61 @@ const uploadMutipleVideos = async (req: Request<ParamsDictionary, any, any, any>
     data: await Promise.all(videos)
   })
 }
+const destroyVideos = async (
+  req: Request<
+    ParamsDictionary,
+    any,
+    {
+      destroyVideos: string[] // array of public_id
+    },
+    any
+  >,
+  res: Response
+) => {
+  const { destroyVideos } = req.body
+
+  if (!destroyVideos || destroyVideos.length === 0) {
+    return responseSuccess(res, {
+      message: destroyVideos ? 'Không có hình để xóa' : 'Vui lòng cung cấp thông tin destroyVideos',
+      data: null
+    })
+  }
+
+  try {
+    // Dùng Promise.all để thực hiện song song các tác vụ xóa trên Cloudinary và database
+    const results = await Promise.all(
+      destroyVideos.map(async (publicId) => {
+        const [cloudinaryResult, dbResult] = await Promise.all([
+          cloudinary.uploader.destroy(publicId, {
+            resource_type: 'image'
+          }),
+          videosService.deleteVideoByPublicId(publicId)
+        ])
+        // Kiểm tra kết quả từng tác vụ và trả về thông báo phù hợp
+        return {
+          publicId,
+          cloudinary: cloudinaryResult[0],
+          database: dbResult
+        }
+      })
+    )
+
+    return responseSuccess(res, {
+      message: 'Xóa videos thành công', // Thông báo tổng quát hơn
+      data: results // Trả về chi tiết kết quả của từng hình videos
+    })
+  } catch (error) {
+    console.error('Lỗi khi xóa videos:', error)
+    return responseError(res, {
+      statusCode: 500,
+      message: 'Internal Server Error'
+    }) // Hoặc trả về lỗi cụ thể hơn
+  }
+}
+
 const videosControllers = {
   createVideo,
-  uploadMutipleVideos
+  uploadMutipleVideos,
+  destroyVideos
 }
 export default videosControllers
