@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import uploadImageControllers from '~/controllers/upload_images.controller'
+import commonMiddlewares from '~/middlewares/common.middleware'
 import upload from '~/storage/storage'
 import { wrapRequestHandler } from '~/utils/requestHandler'
 const uploadImagesRoutes = Router()
@@ -41,5 +42,15 @@ uploadImagesRoutes.post(
   '/multiple-images',
   upload.array('images'),
   wrapRequestHandler(uploadImageControllers.uploadCloudinaryMultipleImages)
+)
+/**
+ * description: Destroy images
+ * path: /upload/destroy
+ * method: PUT
+ */
+uploadImagesRoutes.put(
+  '/destroy',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(uploadImageControllers.destroyImages)
 )
 export default uploadImagesRoutes

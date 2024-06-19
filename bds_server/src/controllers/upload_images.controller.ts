@@ -4,7 +4,7 @@ import { v2 as cloudinary } from 'cloudinary'
 import httpStatusCode from '~/constants/httpStatusCode'
 import imagesService from '~/services/images.service'
 import { ErrorWithMessage } from '~/utils/error'
-import { responseSuccess } from '~/utils/response'
+import { responseError, responseSuccess } from '~/utils/response'
 import env_config from '~/configs/env.config'
 
 cloudinary.config({
@@ -115,9 +115,62 @@ const getCloudinaryImageById = async (req: Request<ParamsDictionary, any, any, a
     data: image
   })
 }
+const destroyImages = async (
+  req: Request<
+    ParamsDictionary,
+    any,
+    {
+      destroyImages: string[] // array of public_id
+    },
+    any
+  >,
+  res: Response
+) => {
+  const { destroyImages } = req.body
+
+  if (!destroyImages || destroyImages.length === 0) {
+    return responseSuccess(res, {
+      message: destroyImages ? 'Không có hình để xóa' : 'Vui lòng cung cấp thông tin destroyImages',
+      data: null
+    })
+  }
+
+  try {
+    // Dùng Promise.all để thực hiện song song các tác vụ xóa trên Cloudinary và database
+    const results = await Promise.all(
+      destroyImages.map(async (publicId) => {
+        const [cloudinaryResult, dbResult] = await Promise.all([
+          cloudinary.uploader.destroy(publicId, {
+            resource_type: 'image'
+          }),
+          imagesService.deleteImageByPublicId(publicId)
+        ])
+        // Kiểm tra kết quả từng tác vụ và trả về thông báo phù hợp
+        return {
+          publicId,
+          cloudinary: cloudinaryResult[0],
+          database: dbResult
+        }
+      })
+    )
+
+    return responseSuccess(res, {
+      message: 'Xóa ảnh thành công', // Thông báo tổng quát hơn
+      data: results // Trả về chi tiết kết quả của từng hình ảnh
+    })
+  } catch (error) {
+    console.error('Lỗi khi xóa ảnh:', error)
+    return responseError(res, {
+      statusCode: 500,
+      message: 'Internal Server Error'
+    }) // Hoặc trả về lỗi cụ thể hơn
+  }
+}
+
 const uploadImageControllers = {
   getCloudinaryImageById,
   uploadCloudinarySingleImage,
-  uploadCloudinaryMultipleImages
+  uploadCloudinaryMultipleImages,
+  destroyImages
 }
 export default uploadImageControllers

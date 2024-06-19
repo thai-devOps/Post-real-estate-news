@@ -13,6 +13,11 @@ class ImagesService {
   async getImageById(id: string) {
     return await databaseService.images.findOne({ _id: new ObjectId(id) })
   }
+  async deleteImageByPublicId(publicId: string) {
+    return await databaseService.images.findOneAndDelete({
+      public_id: publicId
+    })
+  }
 }
 const imagesService = new ImagesService()
 export default imagesService
