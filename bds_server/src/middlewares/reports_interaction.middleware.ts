@@ -3,19 +3,13 @@ import validateSchema from '~/utils/validation'
 
 const reportsValidator = validateSchema(
   checkSchema({
-    reporter_id: {
-      in: ['body'],
-      notEmpty: {
-        errorMessage: 'Người báo cáo không được để trống'
-      }
-    },
     reported_id: {
       in: ['body'],
       notEmpty: {
         errorMessage: 'Người bị báo cáo không được để trống'
       }
     },
-    report_items_id: {
+    report_item_id: {
       in: ['body'],
       notEmpty: {
         errorMessage: 'ID báo cáo không được để trống'
@@ -31,6 +25,9 @@ const reportsValidator = validateSchema(
       in: ['body'],
       notEmpty: {
         errorMessage: 'Nội dung báo cáo không được để trống'
+      },
+      isArray: {
+        errorMessage: 'Nội dung báo cáo phải là một mảng'
       }
     }
   })

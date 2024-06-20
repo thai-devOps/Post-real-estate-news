@@ -74,10 +74,13 @@ export enum REPORT_TYPE {
   PROJECT = 'PROJECT'
 }
 export enum REPORT_STATUS {
-  RESOLVED = 'RESOLVED',
   PENDING = 'PENDING',
-  CANCELLED = 'CANCELLED',
-  REJECTED = 'REJECTED'
+  // Không xử lý
+  UNRESOLVED = 'UNRESOLVED',
+  // Cảnh báo
+  WARNING = 'WARNING',
+  // Gỡ bài viết
+  REMOVE_POST = 'REMOVE_POST'
 }
 export enum UNIT {
   // m2

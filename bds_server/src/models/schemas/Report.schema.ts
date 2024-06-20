@@ -8,7 +8,7 @@ interface ReportInteraction {
   report_item_id: ObjectId
   report_type: REPORT_TYPE
   status?: REPORT_STATUS
-  content: string
+  content: string[]
   created_at?: Date
   updated_at?: Date
 }
@@ -19,7 +19,7 @@ export class REPORT_INTERACTION_SCHEMA {
   report_item_id: ObjectId
   status: REPORT_STATUS
   report_type: REPORT_TYPE
-  content: string
+  content: string[]
   created_at: Date
   updated_at: Date
   constructor(reportInteraction: ReportInteraction) {

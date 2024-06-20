@@ -10,7 +10,12 @@ const creatReport = async (
   res: Response
 ) => {
   const payload = req.body
-  const result = await reportsInteractionService.createReport(payload)
+  const reporter_id = (req.decoded_access_token as TokenPayload).user_id
+  console.log(payload)
+  const result = await reportsInteractionService.createReport({
+    ...payload,
+    reporter_id: reporter_id
+  })
   return responseSuccess(res, {
     message: 'Báo cáo thành công',
     data: result
@@ -31,7 +36,7 @@ const updateReportStatus = async (
   const { report_id, status } = req.body
   const result = await reportsInteractionService.updateReportStatus(report_id, status)
   return responseSuccess(res, {
-    message: 'Cập nhật trạng thái báo cáo thành công',
+    message: 'Xử lý báo cáo thành công',
     data: result
   })
 }

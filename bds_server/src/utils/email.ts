@@ -8,6 +8,7 @@ import { formatCurrency, handlePriceDiscount } from './formatCurrency'
 import { DISCOUNT_TYPE } from '~/enums/util.enum'
 import { capitalize } from 'lodash'
 import { VIP_USER_DETAIL_SCHEMA } from '~/models/schemas/VipUserDetail.schema'
+import { REAL_ESTATE_NEW_SCHEMA } from '~/models/schemas/RealEstateNew.schema'
 
 export const sendEmailVerification = async (
   email: string,
@@ -381,3 +382,5 @@ export const sendEmailSignVipSuccess = async ({
     console.log(error)
   }
 }
+export const sendEmailWarningVipExpire = async () => {}
+

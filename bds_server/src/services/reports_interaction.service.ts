@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb'
 import { REPORT_STATUS, REPORT_TYPE } from '~/enums/util.enum'
 
 class ReportsInteractionService {
-  async createReport(data: REPORTS_INTERACTION_REQUEST_BODY) {
+  async createReport(data: REPORTS_INTERACTION_REQUEST_BODY & { reporter_id: string }) {
     return await databaseService.reports_interaction.insertOne(
       new REPORT_INTERACTION_SCHEMA({
         ...data,
@@ -16,6 +16,23 @@ class ReportsInteractionService {
     )
   }
   public async updateReportStatus(id: string, status: REPORT_STATUS) {
+    if (!Object.values(REPORT_STATUS).includes(status)) {
+      throw new Error('Invalid status')
+    }
+    if (status === REPORT_STATUS.REMOVE_POST) {
+      const report = await databaseService.reports_interaction.findOne({ _id: new ObjectId(id) })
+      if (!report) {
+        throw new Error('Report not found')
+      }
+      if (report.report_type === REPORT_TYPE.POST) {
+        await databaseService.real_estate_news.findOneAndDelete({ _id: report.report_item_id })
+        return await databaseService.reports_interaction.findOneAndUpdate(
+          { _id: new ObjectId(id) },
+          { $set: { status, updated_at: new Date() } },
+          { returnDocument: 'after' }
+        )
+      }
+    }
     return await databaseService.reports_interaction.findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: { status, updated_at: new Date() } },
