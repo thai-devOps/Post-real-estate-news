@@ -48,7 +48,34 @@ class CommentsService {
     return await databaseService.comments.findOne({ _id: new ObjectId(id) })
   }
   public async getCommentsByPostId(post_id: string) {
-    return await databaseService.comments.find({ post_id: new ObjectId(post_id) }).toArray()
+    return await databaseService.comments
+      .aggregate([
+        {
+          $match: {
+            post_id: new ObjectId(post_id)
+          }
+        },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'user_id',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            content: 1,
+            created_at: 1,
+            updated_at: 1,
+            user: {
+              $arrayElemAt: ['$user', 0]
+            }
+          }
+        }
+      ])
+      .toArray()
   }
   public async updateComment(id: string, payload: COMMENT_REQUEST_BODY) {
     return await databaseService.comments.updateOne(
