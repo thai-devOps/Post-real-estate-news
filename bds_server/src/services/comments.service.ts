@@ -2,6 +2,7 @@ import { COMMENT_REQUEST_BODY } from '~/models/requests/comments.quest'
 import databaseService from './database.service'
 import { COMMENT_SCHEMA } from '~/models/schemas/Comment.schema'
 import { ObjectId } from 'mongodb'
+import { ErrorWithMessage } from '~/utils/error'
 
 class CommentsService {
   public async createComment(payload: COMMENT_REQUEST_BODY) {
@@ -77,7 +78,12 @@ class CommentsService {
       ])
       .toArray()
   }
-  public async updateComment(id: string, payload: COMMENT_REQUEST_BODY) {
+  public async updateComment(user_id: string, id: string, payload: COMMENT_REQUEST_BODY) {
+    const comments = await databaseService.comments.findOne({
+      _id: new ObjectId(id)
+    })
+    if (!comments) return null
+    if (comments.user_id.toString() !== user_id) return null
     return await databaseService.comments.updateOne(
       { _id: new ObjectId(id) },
       {
@@ -105,6 +111,25 @@ class CommentsService {
     return await databaseService.comments.deleteMany({
       post_id: new ObjectId(post_id)
     })
+  }
+  async adminDeleteComment(id: string) {
+    return await databaseService.comments.findOneAndDelete({
+      _id: new ObjectId(id)
+    })
+  }
+  async adminUpdateComment(id: string, payload: COMMENT_REQUEST_BODY) {
+    return await databaseService.comments.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          ...payload,
+          post_id: new ObjectId(payload.post_id),
+          user_id: new ObjectId(payload.user_id),
+          updated_at: new Date()
+        }
+      },
+      { returnDocument: 'after' }
+    )
   }
 }
 const commentsService = new CommentsService()

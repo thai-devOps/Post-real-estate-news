@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
+import { ROLE_TYPE } from '~/enums/user.enum'
 import { COMMENT_REQUEST_BODY } from '~/models/requests/comments.quest'
 import commentsService from '~/services/comments.service'
 import vipPackagesService from '~/services/vip_packages.service'
@@ -64,8 +65,22 @@ const getCommentsOfPostId = async (req: Request<ParamsDictionary, any, any, any>
 }
 const updateComment = async (req: Request<ParamsDictionary, any, COMMENT_REQUEST_BODY, any>, res: Response) => {
   const { commentId } = req.params
+  const { user_id, role } = req.decoded_access_token as TokenPayload
   const payload = req.body
-  const result = await commentsService.updateComment(commentId, payload)
+  if (role === ROLE_TYPE.ADMIN) {
+    const result = await commentsService.adminUpdateComment(commentId, payload)
+    return responseSuccess(res, {
+      message: 'Admin cập nhật comment thành công',
+      data: result
+    })
+  }
+  const result = await commentsService.updateComment(user_id, commentId, payload)
+  if (!result) {
+    return responseError(res, {
+      message: 'Cập nhật comment thất bại hoặc bạn không có quyền cập nhật',
+      code: 400 // Bad request
+    })
+  }
   return responseSuccess(res, {
     message: 'Cập nhật comment thành công',
     data: result
@@ -73,7 +88,14 @@ const updateComment = async (req: Request<ParamsDictionary, any, COMMENT_REQUEST
 }
 const deleteComment = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
   const { id } = req.params
-  const { user_id } = req.decoded_access_token as TokenPayload
+  const { user_id, role } = req.decoded_access_token as TokenPayload
+  if (role === ROLE_TYPE.ADMIN) {
+    const result = await commentsService.adminDeleteComment(id)
+    return responseSuccess(res, {
+      message: 'Admin xóa comment thành công',
+      data: result
+    })
+  }
   const result = await commentsService.deleteComment(id, user_id)
   if (!result) {
     return responseError(res, {

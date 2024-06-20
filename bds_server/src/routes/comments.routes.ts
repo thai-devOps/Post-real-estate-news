@@ -60,4 +60,19 @@ commentsRoutes.put(
   commonMiddlewares.accessTokenValidator,
   wrapRequestHandler(commentsControllers.updateComment)
 )
+/**
+ * description: Delete a comment
+ * method: DELETE
+ * path: /comments/delete/:id
+ * params: id (comment id)
+ * headers: {
+ * Authorization: {
+ * description: Bearer access_token
+ * }
+ */
+commentsRoutes.delete(
+  '/delete/:id',
+  commonMiddlewares.accessTokenValidator,
+  wrapRequestHandler(commentsControllers.deleteComment)
+)
 export default commentsRoutes
