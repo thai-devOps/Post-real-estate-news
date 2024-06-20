@@ -78,7 +78,12 @@ class ReportsInteractionService {
     return await databaseService.reports_interaction.deleteOne({ _id: new ObjectId(id) })
   }
   public async getReports() {
-    return await databaseService.reports_interaction.find().toArray()
+    return await databaseService.reports_interaction
+      .find()
+      .sort({
+        created_at: -1
+      })
+      .toArray()
   }
   public async getReportsByType(type: REPORT_TYPE) {
     return await databaseService.reports_interaction.find({ report_type: type }).toArray()
