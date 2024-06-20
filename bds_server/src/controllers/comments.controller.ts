@@ -10,11 +10,8 @@ const createComment = async (req: Request<ParamsDictionary, any, COMMENT_REQUEST
   const payload = req.body
   const { user_id } = req.decoded_access_token as TokenPayload
   const vip_detail = await vipUserDetailsService.getVipUserByUserId(user_id)
-  if(!vip_detail) {
-    return responseError(res, {
-      message: 'Bạn không có quyền thêm comment',
-      code: 400 // Bad request
-    })
+  if (!vip_detail) {
+    throw new Error('Bạn không có quyền thêm comment!')
   }
   const vip_package = await vipPackagesService.getById(vip_detail.package_id.toString())
   if (!vip_package) {

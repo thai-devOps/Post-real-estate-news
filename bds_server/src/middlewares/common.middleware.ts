@@ -305,19 +305,23 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
   next()
 }
 const isVipUser = async (req: Request, res: Response, next: NextFunction) => {
-  const { user_id } = req.decoded_access_token as TokenPayload
-  const user = await userService.findUserById(user_id)
-  if (!user) {
-    return res.status(httpStatusCode.NOT_FOUND).json({ message: 'Không tìm thấy người dùng' })
+  try { 
+    const { user_id } = req.decoded_access_token as TokenPayload
+    const user = await userService.findUserById(user_id)
+    if (!user) {
+      return res.status(httpStatusCode.NOT_FOUND).json({ message: 'Không tìm thấy người dùng' })
+    }
+    const vip_user_detail = await vipUserDetailsService.getVipUserByUserId(user_id)
+    if (!vip_user_detail) {
+      throw new ErrorWithMessage({
+        message: 'Bạn không phải là người dùng VIP',
+        status: httpStatusCode.FORBIDDEN
+      })
+    }
+    next()
+  } catch (error) {
+    responseError(res, error)
   }
-  const vip_user_detail = await vipUserDetailsService.getVipUserByUserId(user_id)
-  if (!vip_user_detail) {
-    throw new ErrorWithMessage({
-      message: 'Bạn không phải là người dùng VIP',
-      status: httpStatusCode.FORBIDDEN
-    })
-  }
-  next()
 }
 const commonMiddlewares = {
   registerBodyValidator,
