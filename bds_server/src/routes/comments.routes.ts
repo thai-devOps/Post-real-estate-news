@@ -29,7 +29,12 @@ commentsRoutes.post(
  * path: /comments
  *
  */
-commentsRoutes.get('/', wrapRequestHandler(commentsControllers.getComments))
+commentsRoutes.get(
+  '/all',
+  commonMiddlewares.accessTokenValidator,
+  commonMiddlewares.isAdmin,
+  wrapRequestHandler(commentsControllers.getComments)
+)
 
 /**
  * description: Get a comment by post id

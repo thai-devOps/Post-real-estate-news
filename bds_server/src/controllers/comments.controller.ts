@@ -37,19 +37,7 @@ const createComment = async (req: Request<ParamsDictionary, any, COMMENT_REQUEST
   })
 }
 const getComments = async (req: Request<ParamsDictionary, any, any, any>, res: Response) => {
-  const { content, limit, page, order_by, sort_by } = req.query as { [key: string]: string }
-  const result = await commentsService.getAllComments({
-    limit: parseInt(limit),
-    page: parseInt(page),
-    order_by,
-    sort_by,
-    condition: {
-      content: {
-        $regex: content,
-        $options: 'i'
-      }
-    }
-  })
+  const result = await commentsService.getAllComments()
   return responseSuccess(res, {
     message: 'Lấy danh sách bình luận thành công',
     data: result

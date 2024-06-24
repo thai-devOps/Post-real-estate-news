@@ -14,36 +14,8 @@ class CommentsService {
       })
     )
   }
-  public async getAllComments({
-    page,
-    limit,
-    order_by,
-    sort_by,
-    condition
-  }: {
-    page: number
-    limit: number
-    sort_by: string
-    order_by: string
-    condition: any
-  }) {
-    const result = await Promise.all([
-      databaseService.comments
-        .find(condition)
-        .sort({ [sort_by]: order_by === 'asc' ? 1 : -1 })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .toArray(),
-      databaseService.comments.countDocuments(condition)
-    ])
-    return {
-      items: result[0],
-      paginate: {
-        total: Math.ceil(result[1] / limit),
-        page,
-        limit
-      }
-    }
+  public async getAllComments() {
+    return await databaseService.comments.find().toArray()
   }
   public async getCommentById(id: string) {
     return await databaseService.comments.findOne({ _id: new ObjectId(id) })
