@@ -340,7 +340,7 @@ export const sendEmailSignVipSuccess = async ({
                 </tr>
                 <tr>
                     <th>Thành tiền</th>
-                    <td>${formatCurrency(handlePriceDiscount(vip_package.price, vip_package.discount))}</td>
+                    <td>${formatCurrency(vip_package.price - vip_package.discount.discountAmount)}</td>
                 </tr>
                 <tr>
                     <th>Kỳ thanh toán tiếp theo</th>
@@ -383,4 +383,3 @@ export const sendEmailSignVipSuccess = async ({
   }
 }
 export const sendEmailWarningVipExpire = async () => {}
-

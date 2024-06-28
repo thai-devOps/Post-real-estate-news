@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import httpStatusCode from '~/constants/httpStatusCode'
-import { PAYMENT_STATUS, VIP_PACKAGE_DURATION } from '~/enums/util.enum'
+import { PAYMENT_STATUS, VIP_PACKAGE_DURATION, VIP_STATUS } from '~/enums/util.enum'
 import { PAYMENT_REQUEST_BODY } from '~/models/requests/payments.request'
 import { VIP_USER_DETAIL_REQUEST_BODY } from '~/models/requests/vip_user_detail.request'
 import { PAYMENT_SCHEMA } from '~/models/schemas/Payment.schema'
@@ -32,35 +32,78 @@ const createPayment = async (req: Request<ParamsDictionary, any, PAYMENT_REQUEST
   const result = await paymentService.createPayment(payload, user_id)
   if (is_paid) {
     const user = (await userService.getUserById(user_id)) as USER_SCHEMA
+    const currentVip = (await vipUserDetailsService.getActiveCurrentVip(user_id)) as {
+      package: VIP_PACKAGE_SCHEMA
+      user: USER_SCHEMA
+      start_date: Date
+      posting_used: number | string
+      comments_used: number | string
+      featured_post_used: number | string
+      status: VIP_STATUS
+      end_date: Date
+      current_active: boolean
+    }[]
     const payment = (await paymentService.confirmPayment(result.insertedId.toString())) as PAYMENT_SCHEMA
-    const endDate: Date = new Date()
-    if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_DAY) {
-      endDate.setDate(endDate.getDate() + 1)
-    } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_WEEK) {
-      endDate.setDate(endDate.getDate() + 7)
-    } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_MONTH) {
-      endDate.setMonth(endDate.getMonth() + 1)
-    } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_YEAR) {
-      endDate.setFullYear(endDate.getFullYear() + 1)
+    if (!currentVip) {
+      const endDate: Date = new Date()
+      if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_DAY) {
+        endDate.setDate(endDate.getDate() + 1)
+      } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_WEEK) {
+        endDate.setDate(endDate.getDate() + 7)
+      } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_MONTH) {
+        endDate.setMonth(endDate.getMonth() + 1)
+      } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_YEAR) {
+        endDate.setFullYear(endDate.getFullYear() + 1)
+      }
+      const details_payload: VIP_USER_DETAIL_REQUEST_BODY = {
+        user_id: user._id.toString(),
+        package_id: package_id,
+        start_date: new Date(),
+        end_date: endDate
+      }
+      const createVipDetail = await vipUserDetailsService.create(details_payload)
+      const vip_user_detail = (await vipUserDetailsService.getById(
+        createVipDetail.insertedId.toString()
+      )) as VIP_USER_DETAIL_SCHEMA
+      await paymentService.confirmPayment(result.insertedId.toString())
+      await sendEmailSignVipSuccess({
+        user,
+        payment,
+        vip_package: package_vip,
+        vip_detail: vip_user_detail,
+        subject: 'Đăng ký gói vip thành công'
+      })
+    } else {
+      const endDate: Date = new Date(currentVip[0].end_date)
+      if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_DAY) {
+        endDate.setDate(endDate.getDate() + 1)
+      } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_WEEK) {
+        endDate.setDate(endDate.getDate() + 7)
+      } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_MONTH) {
+        endDate.setMonth(endDate.getMonth() + 1)
+      } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_YEAR) {
+        endDate.setFullYear(endDate.getFullYear() + 1)
+      }
+      const details_payload: VIP_USER_DETAIL_REQUEST_BODY = {
+        user_id: user._id.toString(),
+        package_id: package_id,
+        start_date: currentVip[0].end_date,
+        status: VIP_STATUS.RENEW,
+        end_date: endDate
+      }
+      const createVipDetail = await vipUserDetailsService.create(details_payload)
+      const vip_user_detail = (await vipUserDetailsService.getById(
+        createVipDetail.insertedId.toString()
+      )) as VIP_USER_DETAIL_SCHEMA
+      await paymentService.confirmPayment(result.insertedId.toString())
+      await sendEmailSignVipSuccess({
+        user,
+        payment,
+        vip_package: package_vip,
+        vip_detail: vip_user_detail,
+        subject: 'Gia hạn gói vip thành công'
+      })
     }
-    const details_payload: VIP_USER_DETAIL_REQUEST_BODY = {
-      user_id: user._id.toString(),
-      package_id: package_id,
-      start_date: new Date(),
-      end_date: endDate
-    }
-    const createVipDetail = await vipUserDetailsService.create(details_payload)
-    const vip_user_detail = (await vipUserDetailsService.getById(
-      createVipDetail.insertedId.toString()
-    )) as VIP_USER_DETAIL_SCHEMA
-    await paymentService.confirmPayment(result.insertedId.toString())
-    await sendEmailSignVipSuccess({
-      user,
-      payment,
-      vip_package: package_vip,
-      vip_detail: vip_user_detail,
-      subject: 'Đăng ký gói vip thành công'
-    })
   }
   return responseSuccess(res, {
     message: 'Tạo thanh toán thành công',

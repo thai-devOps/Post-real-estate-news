@@ -137,30 +137,43 @@ app.use('/real-estate-news', realEstateNewsRoutes)
 //   }
 // })
 // // Cập nhật trạng thái vip tự động sau mỗi ngày 00:00 AM
-// cron.schedule('0 0 * * * *', async () => {
-//   try {
-//     const vipUsers = await databaseService.vip_user_details.find().toArray()
-//     for (const vipUser of vipUsers) {
-//       const now = new Date()
-//       if (now > vipUser.end_date) {
-//         await databaseService.vip_user_details.findOneAndUpdate(
-//           {
-//             _id: vipUser._id
-//           },
-//           {
-//             $set: {
-//               current_active: false,
-//               status: VIP_STATUS.EXPIRED
-//             }
-//           }
-//         )
-//       }
-//     }
-//     console.log('Cập nhật trạng thái vip')
-//   } catch (error) {
-//     console.log(error)
-//   }
-// })
+cron.schedule('0 0 * * * *', async () => {
+  try {
+    const vipUsers = await databaseService.vip_user_details.find().toArray()
+    for (const vipUser of vipUsers) {
+      const now = new Date()
+      if (now > vipUser.end_date) {
+        await databaseService.vip_user_details.findOneAndUpdate(
+          {
+            _id: vipUser._id
+          },
+          {
+            $set: {
+              current_active: false,
+              status: VIP_STATUS.EXPIRED
+            }
+          }
+        )
+      }
+      if (now === vipUser.start_date) {
+        await databaseService.vip_user_details.findOneAndUpdate(
+          {
+            _id: vipUser._id
+          },
+          {
+            $set: {
+              current_active: true,
+              status: VIP_STATUS.ACTIVE
+            }
+          }
+        )
+      }
+    }
+    console.log('Cập nhật trạng thái vip')
+  } catch (error) {
+    console.log(error)
+  }
+})
 
 // Routes
 app.post('/api/orders', async (req, res) => {

@@ -3,6 +3,8 @@ import databaseService from './database.service'
 import { VIP_USER_DETAIL_SCHEMA } from '~/models/schemas/VipUserDetail.schema'
 import { ObjectId } from 'mongodb'
 import { VIP_STATUS } from '~/enums/util.enum'
+import { VIP_PACKAGE_SCHEMA } from '~/models/schemas/VipPackage.schema'
+import { USER_SCHEMA } from '~/models/schemas/User.schema'
 
 class VipUserDetailsService {
   async create(payload: VIP_USER_DETAIL_REQUEST_BODY) {

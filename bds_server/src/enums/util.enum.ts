@@ -140,7 +140,9 @@ export enum VIP_STATUS {
   // Sắp hết hạn
   EXPIRING = 'expiring',
   // Đã hết hạn
-  EXPIRED = 'expired'
+  EXPIRED = 'expired',
+  // Gia hạn
+  RENEW = 'renew'
 }
 export enum VIP_PACKAGE_DURATION {
   // 1 ngày
