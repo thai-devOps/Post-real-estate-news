@@ -26,6 +26,7 @@ import vipUserDetailsRoutes from './routes/vip_user_details.routes'
 import { POST_STATUS, VIP_STATUS } from './enums/util.enum'
 import fetch from 'node-fetch'
 import { responseSuccess } from './utils/response'
+import provincesRoutes from './routes/provinces.routes'
 const app = express()
 app.use(
   cors({
@@ -48,21 +49,7 @@ app.get('', (req, res) => {
 app.get('/checkout', (req, res) => {
   return res.render('checkout')
 })
-app.get('/api/province', async (req, res) => {
-  const result = await fetch('https://vapi.vnappmob.com/api/province/')
-  return responseSuccess(res, {
-    message: 'Lấy province thành công',
-    data: await result.json()
-  })
-})
-app.get('/api/district/:id', async (req, res) => {
-  const { id } = req.params
-  const result = await fetch(`https://vapi.vnappmob.com/api/province/district/${id}`)
-  return responseSuccess(res, {
-    message: 'Lấy district thành công',
-    data: await result.json()
-  })
-})
+app.use('/api/province', provincesRoutes)
 // Connect to the database
 databaseService.connect()
 app.use('/real-estate-news', realEstateNewsRoutes)
@@ -134,8 +121,8 @@ app.use('/real-estate-news', realEstateNewsRoutes)
 //     console.error('Failed to update trending posts', error)
 //   }
 // })
-// // Update post status if expired every day at 00:00 AM
-// cron.schedule('0 0 * * *', async () => {
+// Update post status if expired every day at 00:00 AM
+// cron.schedule('*/1 * * * *', async () => {
 //   try {
 //     const posts = await realEstateNewsService.getAllNotPagination()
 //     for (const post of posts) {
