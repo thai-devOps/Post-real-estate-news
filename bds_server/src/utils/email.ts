@@ -141,122 +141,6 @@ export const sendEmailSignVipSuccess = async ({
   subject: string
 }) => {
   try {
-    //     const htmlContent = `<!DOCTYPE html>
-    // <html lang="en">
-    // <head>
-    //     <meta charset="UTF-8">
-    //     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    //     <title>Đăng Ký VIP Thành Công</title>
-    //     <style>
-    //         body {
-    //             font-family: 'Arial', sans-serif;
-    //             background-color: #f4f4f4;
-    //             margin: 0;
-    //             display: flex;
-    //             justify-content: center;
-    //             align-items: center;
-    //             height: 100vh;
-    //         }
-
-    //         .container {
-    //             background-color: white;
-    //             padding: 30px;
-    //             border-radius: 10px;
-    //             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    //             max-width: 600px;
-    //             text-align: center;
-    //         }
-
-    //         h1 {
-    //             color: #4CAF50;
-    //             font-size: 24px;
-    //             margin-bottom: 20px;
-    //         }
-
-    //         p {
-    //             font-size: 18px;
-    //             margin-bottom: 20px;
-    //         }
-
-    //         table {
-    //             width: 100%;
-    //             border-collapse: collapse;
-    //             margin-bottom: 20px;
-    //         }
-
-    //         th, td {
-    //             padding: 12px;
-    //             border: 1px solid #ddd;
-    //             text-align: left;
-    //         }
-
-    //         th {
-    //             background-color: #f2f2f2;
-    //         }
-
-    //         .button {
-    //             display: inline-block;
-    //             padding: 10px 20px;
-    //             background-color: #4CAF50;
-    //             color: white;
-    //             text-decoration: none;
-    //             border-radius: 5px;
-    //             font-size: 16px;
-    //         }
-
-    //         .button:hover {
-    //             background-color: #45a049;
-    //         }
-    //     </style>
-    // </head>
-    // <body>
-    //     <div class="container">
-    //         <h1>Đăng Ký VIP Thành Công!</h1>
-    //         <p>Cảm ơn bạn đã đăng ký gói VIP của chúng tôi.</p>
-    //         <table>
-    //             <tr>
-    //                 <th>Thông tin tài khoản</th>
-    //                 <td></td>
-    //             </tr>
-    //             <tr>
-    //                 <td><strong>Tên:</strong></td>
-    //                 <td>${user.full_name}</td>
-    //             </tr>
-    //             <tr>
-    //                 <td><strong>Email:</strong></td>
-    //                 <td>${user.email}</td>
-    //             </tr>
-    //             <tr>
-    //                 <th>Chi tiết gói VIP</th>
-    //                 <td></td>
-    //             </tr>
-    //             <tr>
-    //                 <td><strong>Giá gói VIP:</strong></td>
-    //                 <td>${formatCurrency(vip_package.price)}</td>
-    //             </tr>
-    //             <tr>
-    //                 <td><strong>Giảm giá:</strong></td>
-    //                 <td>${vip_package.discount.discountPercentage + '%'}</td>
-    //             </tr>
-    //             <tr>
-    //                 <td><strong>Thành tiền:</strong></td>
-    //                 <td>${formatCurrency(handlePriceDiscount(vip_package.price, vip_package.discount))}</td>
-    //             </tr>
-    //             <tr>
-    //                 <td><strong>Kỳ thanh toán tiếp theo:</strong></td>
-    //                 <td>${new Date(vip_detail.end_date).toLocaleDateString('vi-VN')}</td>
-    //             </tr>
-    //             <tr>
-    //                 <td><strong>Phương thức thanh toán:</strong></td>
-    //                 <td>${capitalize(payment.payment_method)}</td>
-    //             </tr>
-    //         </table>
-    //         <a href="${env_config.CLIENT_PORTS}" class="button">Quay về trang chủ</a>
-    //     </div>
-    // </body>
-    // </html>
-
-    // `
     const htmlContent = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -382,4 +266,106 @@ export const sendEmailSignVipSuccess = async ({
     console.log(error)
   }
 }
-export const sendEmailWarningVipExpire = async () => {}
+export const sendEmailWarningVipExpire = async ({
+  user,
+  vip_package,
+  vip_detail,
+  subject
+}: {
+  user: USER_SCHEMA
+  vip_package: VIP_PACKAGE_SCHEMA
+  vip_detail: VIP_USER_DETAIL_SCHEMA
+  subject: string
+}) => {
+  try {
+    const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 5px 5px 0 0;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .content h2 {
+            color: #333333;
+        }
+        .content p {
+            color: #666666;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background-color: #4CAF50;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #999999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <h1>Thông báo sắp hết hạn gói VIP</h1>
+        </div>
+        <div class="content">
+            <h2>Xin chào ${user.full_name},</h2>
+            <p>Chúng tôi muốn thông báo rằng gói VIP của bạn sẽ hết hạn vào ngày <strong>${new Date(vip_detail.end_date).toLocaleDateString('vi-VN')}</strong>.</p>
+            <p>Để tiếp tục tận hưởng các quyền lợi của gói VIP, vui lòng gia hạn gói của bạn trước ngày hết hạn.</p>
+            <a href="${env_config.CLIENT_PORTS + `/renew?package_id=${vip_package._id}`}" class="button">Gia hạn ngay</a>
+        </div>
+        <div class="footer">
+            <p>Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi tại <a href="mailto:support@example.com">support@example.com</a>.</p>
+            <p>Trân trọng,<br>Đội ngũ Hỗ trợ Khách hàng</p>
+        </div>
+    </div>
+</body>
+</html>
+`
+    const transporter = nodemailer.createTransport({
+      host: env_config.EMAIL_HOST,
+      service: env_config.EMAIL_SERVICE,
+      port: Number(env_config.EMAIL_PORT),
+      secure: Boolean(env_config.EMAIL_SERCURE),
+      auth: {
+        user: env_config.EMAIL_AUTH_USER,
+        pass: env_config.EMAIL_AUTH_PASS
+      }
+    })
+    return await transporter.sendMail({
+      from: env_config.EMAIL_AUTH_USER,
+      to: user.email,
+      subject: subject,
+      html: htmlContent
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}

@@ -27,6 +27,7 @@ import { POST_STATUS, VIP_STATUS } from './enums/util.enum'
 import fetch from 'node-fetch'
 import { responseSuccess } from './utils/response'
 import provincesRoutes from './routes/provinces.routes'
+import { sendEmailWarningVipExpire } from './utils/email'
 const app = express()
 app.use(
   cors({
@@ -137,12 +138,20 @@ app.use('/real-estate-news', realEstateNewsRoutes)
 //   }
 // })
 // // Cập nhật trạng thái vip tự động sau mỗi ngày 00:00 AM
-cron.schedule('0 0 * * * *', async () => {
+cron.schedule('*/1 * * * *', async () => {
   try {
     const vipUsers = await databaseService.vip_user_details.find().toArray()
+    const now = new Date()
+    const nowDateOnly = new Date(now.toDateString()) // Chỉ lấy phần ngày, bỏ qua phần thời gian
+
     for (const vipUser of vipUsers) {
-      const now = new Date()
-      if (now > vipUser.end_date) {
+      const endDate = new Date(vipUser.end_date)
+      const startDate = new Date(vipUser.start_date)
+      const endDateOnly = new Date(endDate.toDateString()) // Chỉ lấy phần ngày, bỏ qua phần thời gian
+      const startDateOnly = new Date(startDate.toDateString()) // Chỉ lấy phần ngày, bỏ qua phần thời gian
+
+      // Nếu hết hạn thì cập nhật trạng thái vip
+      if (now > endDate) {
         await databaseService.vip_user_details.findOneAndUpdate(
           {
             _id: vipUser._id
@@ -155,7 +164,9 @@ cron.schedule('0 0 * * * *', async () => {
           }
         )
       }
-      if (now === vipUser.start_date) {
+
+      // Nếu bắt đầu vip thì cập nhật trạng thái vip
+      if (nowDateOnly.getTime() === startDateOnly.getTime()) {
         await databaseService.vip_user_details.findOneAndUpdate(
           {
             _id: vipUser._id
@@ -167,6 +178,43 @@ cron.schedule('0 0 * * * *', async () => {
             }
           }
         )
+      }
+
+      // Kiểm tra xem gói VIP sắp hết hạn trong vòng 3 ngày
+      const expiring = (endDateOnly.getTime() - nowDateOnly.getTime()) / (1000 * 60 * 60 * 24) // Số ngày còn lại
+      const vipRenew = await databaseService.vip_user_details.findOne({
+        _id: vipUser._id,
+        status: VIP_STATUS.RENEW
+      })
+      const vipPackage = await databaseService.vip_packages.findOne({
+        _id: vipUser.package_id
+      })
+      const user = await databaseService.users.findOne({
+        _id: vipUser.user_id
+      })
+
+      if (expiring <= 3 && vipUser.status === VIP_STATUS.ACTIVE && !vipRenew) {
+        await databaseService.vip_user_details.findOneAndUpdate(
+          {
+            _id: vipUser._id
+          },
+          {
+            $set: {
+              current_active: true,
+              status: VIP_STATUS.EXPIRING
+            }
+          }
+        )
+        if (!user || !vipPackage || !vipUser) {
+          console.log('Không tìm thấy thông tin user hoặc gói vip hoặc thông tin vip user')
+          return
+        }
+        await sendEmailWarningVipExpire({
+          subject: 'Bất động sản - Thông báo gói vip sắp hết hạn',
+          user: user,
+          vip_detail: vipUser,
+          vip_package: vipPackage
+        })
       }
     }
     console.log('Cập nhật trạng thái vip')
