@@ -43,8 +43,9 @@ const createPayment = async (req: Request<ParamsDictionary, any, PAYMENT_REQUEST
       end_date: Date
       current_active: boolean
     }[]
+    console.log(currentVip)
     const payment = (await paymentService.confirmPayment(result.insertedId.toString())) as PAYMENT_SCHEMA
-    if (!currentVip) {
+    if (currentVip.length === 0) {
       const endDate: Date = new Date()
       if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_DAY) {
         endDate.setDate(endDate.getDate() + 1)
@@ -74,7 +75,7 @@ const createPayment = async (req: Request<ParamsDictionary, any, PAYMENT_REQUEST
         subject: 'Đăng ký gói vip thành công'
       })
     } else {
-      const endDate: Date = new Date(currentVip[0].end_date)
+      const endDate: Date = new Date(currentVip[0]?.end_date)
       if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_DAY) {
         endDate.setDate(endDate.getDate() + 1)
       } else if (package_vip.duration === VIP_PACKAGE_DURATION.ONE_WEEK) {
